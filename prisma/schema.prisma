@@ -8,35 +8,57 @@ datasource db {
 }
 
 model User {
-  id        String     @id @default(uuid())
-  email     String     @unique
-  username  String
-  question  Question[]
-  comment   Comment[]
-  createdAt DateTime
+  id             String            @id @default(uuid())
+  email          String            @unique
+  username       String
+  question       Question[]
+  comment        Comment[]
+  createdAt      DateTime          @default(now())
+  question_likes LikesOnQuestion[]
+  comment_likes  LikesOnComments[]
 }
 
 model Question {
-  id          String    @id @default(uuid())
+  id          String            @id @default(uuid())
   title       String
   description String
-  author      User      @relation(fields: [userId], references: [id])
+  author      User              @relation(fields: [userId], references: [id])
   userId      String
   category    Category
   comments    Comment[]
-  createdAt   DateTime
-  updatedAt   DateTime
+  createdAt   DateTime          @default(now())
+  updatedAt   DateTime          @default(now())
+  likes       LikesOnQuestion[]
 }
 
 model Comment {
-  id         String    @id @default(uuid())
+  id         String            @id @default(uuid())
   content    String
-  author     User      @relation(fields: [userId], references: [id])
+  author     User              @relation(fields: [userId], references: [id])
   userId     String
-  question   Question? @relation(fields: [questionId], references: [id])
+  question   Question?         @relation(fields: [questionId], references: [id])
   questionId String?
-  createdAt  DateTime
-  updatedAt  DateTime
+  createdAt  DateTime          @default(now())
+  updatedAt  DateTime          @default(now())
+  likes      LikesOnComments[]
+}
+
+model LikesOnQuestion {
+  user       User     @relation(fields: [userId], references: [id])
+  userId     String
+  question   Question @relation(fields: [questionId], references: [id])
+  questionId String
+
+  @@id([userId, questionId])
+}
+
+model LikesOnComments {
+  user      User    @relation(fields: [userId], references: [id])
+  userId    String
+  comment   Comment @relation(fields: [commentId], references: [id])
+  commentId String
+
+  @@id([userId, commentId])
 }
 
 enum Category {

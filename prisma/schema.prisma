@@ -15,7 +15,9 @@ model User {
   comment        Comment[]
   createdAt      DateTime          @default(now())
   question_likes LikesOnQuestion[]
-  comment_likes  LikesOnComments[]
+  comment_likes  LikesOnComment[]
+
+  @@map("users")
 }
 
 model Question {
@@ -24,23 +26,28 @@ model Question {
   description String
   author      User              @relation(fields: [userId], references: [id])
   userId      String
-  category    Category
+  category    Category          @relation(fields: [categoryId], references: [id])
   comments    Comment[]
   createdAt   DateTime          @default(now())
   updatedAt   DateTime          @default(now())
   likes       LikesOnQuestion[]
+  categoryId  Int
+
+  @@map("questions")
 }
 
 model Comment {
-  id         String            @id @default(uuid())
+  id         String           @id @default(uuid())
   content    String
-  author     User              @relation(fields: [userId], references: [id])
+  author     User             @relation(fields: [userId], references: [id])
   userId     String
-  question   Question?         @relation(fields: [questionId], references: [id])
-  questionId String?
-  createdAt  DateTime          @default(now())
-  updatedAt  DateTime          @default(now())
-  likes      LikesOnComments[]
+  question   Question         @relation(fields: [questionId], references: [id])
+  questionId String
+  createdAt  DateTime         @default(now())
+  updatedAt  DateTime         @default(now())
+  likes      LikesOnComment[]
+
+  @@map("comments")
 }
 
 model LikesOnQuestion {
@@ -52,7 +59,7 @@ model LikesOnQuestion {
   @@id([userId, questionId])
 }
 
-model LikesOnComments {
+model LikesOnComment {
   user      User    @relation(fields: [userId], references: [id])
   userId    String
   comment   Comment @relation(fields: [commentId], references: [id])
@@ -61,25 +68,33 @@ model LikesOnComments {
   @@id([userId, commentId])
 }
 
-enum Category {
-  ARTS
-  BEAUTY
-  BUSINESS
-  CARS
-  COMPUTERS
-  ELECTRONICS
-  FOOD
-  EDUCATION
-  ENTERTAINMENT
-  ENVIRONMENT
-  RELATIONSHIPS
-  GAMES
-  HEALTH
-  GARDENING
-  PETS
-  PARENTING
-  SCIENCE
-  CULTURE
-  SPORTS
-  TRAVEL
+model Category {
+  id       Int        @id @default(autoincrement())
+  name     String     @unique
+  question Question[]
+
+  @@map("categories")
 }
+
+// enum Tag {
+//   ARTS
+//   BEAUTY
+//   BUSINESS
+//   CARS
+//   COMPUTERS
+//   ELECTRONICS
+//   FOOD
+//   EDUCATION
+//   ENTERTAINMENT
+//   ENVIRONMENT
+//   RELATIONSHIPS
+//   GAMES
+//   HEALTH
+//   GARDENING
+//   PETS
+//   PARENTING
+//   SCIENCE
+//   CULTURE
+//   SPORTS
+//   TRAVEL
+// }

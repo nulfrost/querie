@@ -1,6 +1,6 @@
 import { renderToString } from "react-dom/server";
-import { RemixServer } from "remix";
-import type { EntryContext } from "remix";
+import { RemixServer } from "@remix-run/cloudflare";
+import type { EntryContext } from "@remix-run/cloudflare";
 import { injectStylesIntoStaticMarkup } from "@mantine/ssr";
 
 export default function handleRequest(

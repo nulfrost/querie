@@ -1,5 +1,4 @@
 import { PrismaClient } from "@prisma/client";
-import type { Question } from "@prisma/client";
 
 interface CustomNodeJsGlobal extends NodeJS.Global {
   prisma: PrismaClient;
@@ -28,6 +27,7 @@ export async function getLatestQuestionsForCategory(category?: string) {
 // Essentially I want to sum the amount of likes a
 // person has on both questions they've asked and
 // comments
+// raw query?
 export async function getLeaderboard() {}
 
 export async function getQuestionAndComments(id: string) {
@@ -74,7 +74,15 @@ export async function createQuestion({
   });
 }
 
-export async function createComment({ content, userId, questionId }) {
+export async function createComment({
+  content,
+  userId,
+  questionId,
+}: {
+  content: string;
+  userId: string;
+  questionId: string;
+}) {
   return prisma.comment.create({
     data: {
       content,
@@ -93,7 +101,13 @@ export async function createComment({ content, userId, questionId }) {
 }
 
 // is this even right?
-export async function createQuestionLike({ questionId, userId }) {
+export async function createQuestionLike({
+  questionId,
+  userId,
+}: {
+  questionId: string;
+  userId: string;
+}) {
   return prisma.question.update({
     where: {
       id: questionId,

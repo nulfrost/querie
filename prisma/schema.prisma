@@ -1,0 +1,63 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String     @id @default(uuid())
+  email     String     @unique
+  username  String
+  question  Question[]
+  comment   Comment[]
+  createdAt DateTime
+}
+
+model Question {
+  id          String    @id @default(uuid())
+  title       String
+  description String
+  author      User      @relation(fields: [userId], references: [id])
+  userId      String
+  category    Category
+  comments    Comment[]
+  createdAt   DateTime
+  updatedAt   DateTime
+}
+
+model Comment {
+  id         String    @id @default(uuid())
+  content    String
+  author     User      @relation(fields: [userId], references: [id])
+  userId     String
+  question   Question? @relation(fields: [questionId], references: [id])
+  questionId String?
+  createdAt  DateTime
+  updatedAt  DateTime
+}
+
+enum Category {
+  ARTS
+  BEAUTY
+  BUSINESS
+  CARS
+  COMPUTERS
+  ELECTRONICS
+  FOOD
+  EDUCATION
+  ENTERTAINMENT
+  ENVIRONMENT
+  RELATIONSHIPS
+  GAMES
+  HEALTH
+  GARDENING
+  PETS
+  PARENTING
+  SCIENCE
+  CULTURE
+  SPORTS
+  TRAVEL
+}

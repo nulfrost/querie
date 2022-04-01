@@ -1,4 +1,4 @@
-import { ActionFunction } from "@remix-run/cloudflare";
+import { ActionFunction } from "@remix-run/node";
 import { authenticator } from "../services/auth.server";
 
 export let action: ActionFunction = async ({ request }) => {

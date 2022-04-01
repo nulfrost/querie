@@ -11,7 +11,7 @@ import {
   Scripts,
   ScrollRestoration,
 } from "@remix-run/react";
-import type { MetaFunction } from "@remix-run/server-runtime";
+import type { MetaFunction } from "@remix-run/node";
 import { useState } from "react";
 
 export const meta: MetaFunction = () => ({

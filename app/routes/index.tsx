@@ -1,32 +1,23 @@
+import { LoaderFunction } from "@remix-run/node";
+import { Form, useLoaderData } from "@remix-run/react";
+import { authenticator } from "~/services/auth.server";
+
+export const loader: LoaderFunction = async ({ request }) => {
+  const user = await authenticator.isAuthenticated(request);
+  return { user };
+};
+
 export default function Index() {
+  const user = useLoaderData();
+
+  console.log(user);
+
   return (
-    <div style={{ fontFamily: "system-ui, sans-serif", lineHeight: "1.4" }}>
-      <h1>Welcome to Remix</h1>
-      <ul>
-        <li>
-          <a
-            target="_blank"
-            href="https://remix.run/tutorials/blog"
-            rel="noreferrer"
-          >
-            15m Quickstart Blog Tutorial
-          </a>
-        </li>
-        <li>
-          <a
-            target="_blank"
-            href="https://remix.run/tutorials/jokes"
-            rel="noreferrer"
-          >
-            Deep Dive Jokes App Tutorial
-          </a>
-        </li>
-        <li>
-          <a target="_blank" href="https://remix.run/docs" rel="noreferrer">
-            Remix Docs
-          </a>
-        </li>
-      </ul>
+    <div>
+      <h2>Hey, {user?.user?.displayName}</h2>
+      <Form action="/logout" method="post">
+        <button>Log out</button>
+      </Form>
     </div>
   );
 }

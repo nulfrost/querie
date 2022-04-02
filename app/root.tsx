@@ -1,4 +1,5 @@
 import {
+  Box,
   ColorScheme,
   ColorSchemeProvider,
   MantineProvider,
@@ -10,9 +11,14 @@ import {
   Outlet,
   Scripts,
   ScrollRestoration,
+  useLoaderData,
 } from "@remix-run/react";
-import type { MetaFunction } from "@remix-run/node";
+import type { LoaderFunction, MetaFunction } from "@remix-run/node";
 import { useState } from "react";
+import { Navbar } from "~/components/Layout/Navbar";
+import { authenticator } from "./services/auth.server";
+import { LinksFunction } from "@remix-run/node";
+import styles from "~/styles/globals.css";
 
 export const meta: MetaFunction = () => ({
   charset: "utf-8",
@@ -20,21 +26,43 @@ export const meta: MetaFunction = () => ({
   viewport: "width=device-width,initial-scale=1",
 });
 
+export const links: LinksFunction = () => {
+  return [
+    {
+      href: styles,
+      rel: "stylesheet",
+    },
+  ];
+};
+
+export const loader: LoaderFunction = async ({ request }) => {
+  const user = await authenticator.isAuthenticated(request);
+  return { user };
+};
+
 export default function App() {
+  const user = useLoaderData();
+
   return (
     <html lang="en">
       <head>
         <Meta />
         <Links />
       </head>
-      <body>
+      <Box
+        component="body"
+        sx={(theme) => ({
+          backgroundColor: theme.colors.gray[2],
+        })}
+      >
         <MantineTheme>
+          <Navbar user={user} />
           <Outlet />
         </MantineTheme>
         <ScrollRestoration />
         <Scripts />
         <LiveReload />
-      </body>
+      </Box>
     </html>
   );
 }

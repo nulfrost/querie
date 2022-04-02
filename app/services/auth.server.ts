@@ -14,12 +14,24 @@ export let authenticator = new Authenticator(sessionStorage, {
 authenticator.use(
   new GoogleStrategy(
     {
-      clientID: "YOUR_CLIENT_ID",
-      clientSecret: "YOUR_CLIENT_SECRET",
+      clientID: process.env.GOOGLE_CLIENT_ID,
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET,
       callbackURL: `http://localhost:3000/auth/${SocialsProvider.GOOGLE}/callback`,
     },
     async ({ profile }) => {
-      // here you would find or create a user in your database
+      return profile;
+    }
+  )
+);
+
+authenticator.use(
+  new DiscordStrategy(
+    {
+      clientID: process.env.DISCORD_CLIENT_ID,
+      clientSecret: process.env.DISCORD_CLIENT_SECRET,
+      callbackURL: `http://localhost:3000/auth/${SocialsProvider.DISCORD}/callback`,
+    },
+    async ({ profile }) => {
       return profile;
     }
   )

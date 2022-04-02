@@ -36,3 +36,16 @@ authenticator.use(
     }
   )
 );
+
+authenticator.use(
+  new GitHubStrategy(
+    {
+      clientID: process.env.GITHUB_CLIENT_ID,
+      clientSecret: process.env.GITHUB_CLIENT_SECRET,
+      callbackURL: `http://localhost:3000/auth/${SocialsProvider.GITHUB}/callback`,
+    },
+    async ({ profile }) => {
+      return profile;
+    }
+  )
+);

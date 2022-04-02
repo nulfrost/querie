@@ -1,7 +1,6 @@
 import { Form } from "@remix-run/react";
 import { SocialsProvider } from "remix-auth-socials";
-import { Container, Button, Title, Stack } from "@mantine/core";
-import { BrandGoogle, BrandDiscord } from "tabler-icons-react";
+import { Container, Button, Title, Stack, Text } from "@mantine/core";
 import { LoaderFunction } from "@remix-run/node";
 import { authenticator } from "~/services/auth.server";
 
@@ -24,8 +23,8 @@ const SocialButton: React.FC<SocialButtonProps> = ({
   icon,
   color,
 }) => (
-  <Form action={`/auth/${provider}`} method="post">
-    <Button leftIcon={icon} color={color} type="submit" size="lg">
+  <Form action={`/auth/${provider}`} method="post" style={{ width: "30%" }}>
+    <Button leftIcon={icon} color={color} type="submit" fullWidth>
       {label}
     </Button>
   </Form>
@@ -36,17 +35,23 @@ export default function Login() {
     <Container mt="xl">
       <Stack align="center">
         <Title order={1}>Log in</Title>
+        <Text color="dimmed" size="sm">
+          Continue with one of these providers
+        </Text>
         <SocialButton
-          icon={<BrandDiscord size={18} />}
           color="indigo"
           provider={SocialsProvider.DISCORD}
           label="Login with Discord"
         />
         <SocialButton
           color="red"
-          icon={<BrandGoogle size={18} />}
           provider={SocialsProvider.GOOGLE}
           label="Login with Google"
+        />
+        <SocialButton
+          color="dark"
+          provider={SocialsProvider.GITHUB}
+          label="Login with Github"
         />
       </Stack>
     </Container>

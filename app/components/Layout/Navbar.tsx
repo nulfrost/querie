@@ -10,6 +10,7 @@ import {
   Divider,
   Burger,
   Title,
+  Button,
 } from "@mantine/core";
 import { useBooleanToggle } from "@mantine/hooks";
 import {
@@ -70,20 +71,6 @@ const useStyles = createStyles((theme) => ({
       display: "none",
     },
   },
-  link: {
-    display: "block",
-    lineHeight: 1,
-    padding: "8px 12px",
-    borderRadius: theme.radius.sm,
-    textDecoration: "none",
-    color:
-      theme.colorScheme === "dark"
-        ? theme.colors.dark[0]
-        : theme.colors.blue[0],
-    fontSize: theme.fontSizes.sm,
-    fontWeight: 500,
-    backgroundColor: theme.colors.blue[8],
-  },
 }));
 
 interface Props {
@@ -99,7 +86,7 @@ export function Navbar({ user }: Props) {
     <div className={classes.header}>
       <Container className={classes.mainSection}>
         <Group position="apart">
-          <Title order={3}>querie?</Title>
+          <Title order={3}>querie</Title>
           <Burger
             opened={opened}
             onClick={() => toggleOpened()}
@@ -108,9 +95,9 @@ export function Navbar({ user }: Props) {
           />
           {!user?.user && (
             <Group spacing={5} className={classes.links}>
-              <Link to="/login" className={classes.link}>
+              <Button component={Link} to="/login">
                 Login
-              </Link>
+              </Button>
             </Group>
           )}
           {user?.user && (

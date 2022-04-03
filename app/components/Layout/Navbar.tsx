@@ -19,8 +19,9 @@ import {
   Message,
   Settings,
   ChevronDown,
+  ChartBar,
 } from "tabler-icons-react";
-import { Link } from "@remix-run/react";
+import { Link, useSubmit } from "@remix-run/react";
 
 const useStyles = createStyles((theme) => ({
   header: {
@@ -81,10 +82,11 @@ export function Navbar({ user }: Props) {
   const { classes, theme, cx } = useStyles();
   const [opened, toggleOpened] = useBooleanToggle(false);
   const [userMenuOpened, setUserMenuOpened] = useState(false);
+  const submit = useSubmit();
 
   return (
     <div className={classes.header}>
-      <Container className={classes.mainSection}>
+      <Container className={classes.mainSection} size="xl">
         <Group position="apart">
           <Title order={3}>querie</Title>
           <Burger
@@ -129,6 +131,11 @@ export function Navbar({ user }: Props) {
                 </UnstyledButton>
               }
             >
+              <Menu.Item
+                icon={<ChartBar size={14} color={theme.colors.indigo[6]} />}
+              >
+                Leaderboard
+              </Menu.Item>
               <Menu.Item icon={<Heart size={14} color={theme.colors.red[6]} />}>
                 Liked posts
               </Menu.Item>
@@ -142,7 +149,18 @@ export function Navbar({ user }: Props) {
                 Account settings
               </Menu.Item>
               <Divider />
-              <Menu.Item icon={<Logout size={14} />}>Logout</Menu.Item>
+              <Menu.Item
+                icon={<Logout size={14} />}
+                onClick={() =>
+                  submit(null, {
+                    method: "post",
+                    action: "/logout",
+                    replace: true,
+                  })
+                }
+              >
+                Logout
+              </Menu.Item>
             </Menu>
           )}
         </Group>

@@ -1,42 +1,50 @@
-import { Box, Container, Paper, Text, Title, Grid } from "@mantine/core";
+import { Box, Paper, Text, Grid, createStyles } from "@mantine/core";
 import { LoaderFunction } from "@remix-run/node";
-import { Form, useLoaderData } from "@remix-run/react";
+import { useLoaderData } from "@remix-run/react";
+import { Link } from "react-router-dom";
+import { getCategories } from "~/db/db.server";
 import { authenticator } from "~/services/auth.server";
+
+const useStyles = createStyles((theme) => ({
+  link: {
+    display: "block",
+  },
+}));
 
 export const loader: LoaderFunction = async ({ request }) => {
   const user = await authenticator.isAuthenticated(request);
-  return { user };
+  const categories = await getCategories();
+  return { user, categories };
 };
 
 export default function Index() {
-  const user = useLoaderData();
+  const data = useLoaderData();
+  const { classes } = useStyles();
 
-  console.log(user);
+  console.log(data);
 
   return (
-    <Container mt="xl">
-      <Grid>
-        <Grid.Col span={3}>
-          <Paper p="lg" shadow="xs">
-            <Text variant="link">Cars</Text>
-            <Text variant="link">Electronics</Text>
-            <Text variant="link">Business</Text>
-          </Paper>
-        </Grid.Col>
-        <Grid.Col span={6}>
-          <Box>
-            <h2>Hey, {user?.user?.displayName}</h2>
-            <Form action="/logout" method="post">
-              <button>Log out</button>
-            </Form>
-          </Box>
-        </Grid.Col>
-        <Grid.Col span={3}>
-          <Paper p="lg">
-            <Title order={4}>Leaderboard</Title>
-          </Paper>
-        </Grid.Col>
-      </Grid>
-    </Container>
+    <Grid>
+      <Grid.Col span={3}>
+        <Paper p="lg" shadow="xs">
+          {data?.categories?.map(({ id, name }) => (
+            <Text
+              component={Link}
+              to={`/category/${name.toLowerCase()}`}
+              key={id}
+              variant="link"
+              className={classes.link}
+            >
+              {name}
+            </Text>
+          ))}
+        </Paper>
+      </Grid.Col>
+      <Grid.Col span={9}>
+        <Box>
+          <h2>Hey, {data?.user?.displayName ?? "Anon"}</h2>
+        </Box>
+      </Grid.Col>
+    </Grid>
   );
 }

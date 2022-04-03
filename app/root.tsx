@@ -2,6 +2,7 @@ import {
   Box,
   ColorScheme,
   ColorSchemeProvider,
+  Container,
   MantineProvider,
 } from "@mantine/core";
 import {
@@ -60,7 +61,9 @@ export default function App() {
       >
         <MantineTheme>
           <Navbar user={user} />
-          <Outlet />
+          <Container size="xl" mt="xl">
+            <Outlet />
+          </Container>
         </MantineTheme>
         <ScrollRestoration />
         <Scripts />

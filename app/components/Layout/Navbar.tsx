@@ -11,6 +11,7 @@ import {
   Burger,
   Title,
   Button,
+  Box,
 } from "@mantine/core";
 import { useBooleanToggle } from "@mantine/hooks";
 import {
@@ -85,7 +86,7 @@ export function Navbar({ user }: Props) {
   const submit = useSubmit();
 
   return (
-    <div className={classes.header}>
+    <Box component="header" className={classes.header}>
       <Container className={classes.mainSection} size="xl">
         <Group position="apart">
           <Title order={3}>querie</Title>
@@ -165,6 +166,6 @@ export function Navbar({ user }: Props) {
           )}
         </Group>
       </Container>
-    </div>
+    </Box>
   );
 }

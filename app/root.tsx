@@ -23,6 +23,7 @@ import { useState } from "react";
 import { Navbar } from "~/components/Layout/Navbar";
 import { authenticator } from "./services/auth.server";
 import styles from "~/styles/globals.css";
+import { Footer } from "./components/Layout/Footer";
 
 export const meta: MetaFunction = () => ({
   charset: "utf-8",
@@ -61,10 +62,12 @@ export default function App() {
       >
         <MantineTheme>
           <Navbar user={user} />
-          <Container size="xl" mt="xl">
+          <Container size="xl" role="main" mt="xl">
             <Outlet />
           </Container>
+          <Footer links={[{ link: "#", label: "Github" }]} />
         </MantineTheme>
+
         <ScrollRestoration />
         <Scripts />
         <LiveReload />

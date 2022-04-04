@@ -1,7 +1,7 @@
+import { Button, Container, Stack, Text, Title } from "@mantine/core";
+import { LoaderFunction } from "@remix-run/node";
 import { Form } from "@remix-run/react";
 import { SocialsProvider } from "remix-auth-socials";
-import { Container, Button, Title, Stack, Text } from "@mantine/core";
-import { LoaderFunction } from "@remix-run/node";
 import { authenticator } from "~/services/auth.server";
 
 interface SocialButtonProps {

@@ -1,22 +1,19 @@
 import {
+  ActionIcon,
+  Box,
+  Card,
   createStyles,
+  Group,
+  Radio,
+  RadioGroup,
+  SimpleGrid,
   Text,
   Title,
-  Card,
-  SimpleGrid,
-  Group,
-  Box,
-  ActionIcon,
-  Divider,
-  Space,
-  Modal,
-  RadioGroup,
-  Radio,
-  Button,
 } from "@mantine/core";
+import { useModals } from "@mantine/modals";
+import { showNotification } from "@mantine/notifications";
 import { LoaderFunction } from "@remix-run/node";
 import { Link, useLoaderData } from "@remix-run/react";
-import { useState } from "react";
 import { Flag2, Heart } from "tabler-icons-react";
 
 const useStyles = createStyles((theme) => ({
@@ -28,6 +25,9 @@ const useStyles = createStyles((theme) => ({
     color: theme.colors.blue[5],
     fontWeight: 700,
   },
+  card: {
+    border: `2px solid ${theme.colors.gray[3]}`,
+  },
 }));
 
 export const loader: LoaderFunction = async ({ params }) => {
@@ -37,8 +37,37 @@ export const loader: LoaderFunction = async ({ params }) => {
 
 export default function Category() {
   const data = useLoaderData();
-  const [opened, setOpened] = useState(false);
+  const modals = useModals();
   const { classes } = useStyles();
+
+  const openReportModal = () => {
+    modals.openConfirmModal({
+      title: "Report post",
+      centered: true,
+      children: (
+        <RadioGroup
+          orientation="vertical"
+          label="Please select a reason for reporting this post."
+          required
+          mb="lg"
+        >
+          <Radio value="harmful" label="Harmful content" />
+          <Radio value="hate" label="Hate speech" />
+          <Radio value="spam" label="Spam" />
+          <Radio value="incorrect" label="Posted in the wrong section" />
+        </RadioGroup>
+      ),
+      labels: { confirm: "Report post", cancel: "Cancel" },
+      onCancel: () => console.log("Cancel"),
+      onConfirm: () => {
+        showNotification({
+          title: "Post reported",
+          message: "Thank you for reporting this post and keeping querie safe.",
+          color: "blue",
+        });
+      },
+    });
+  };
 
   return (
     <SimpleGrid
@@ -50,7 +79,7 @@ export default function Category() {
       ]}
     >
       {Array.from({ length: 20 }, (_, index) => (
-        <Card component="article" key={index}>
+        <Card component="article" key={index} className={classes.card}>
           <Group>
             <Box>
               <Text
@@ -91,7 +120,7 @@ export default function Category() {
                 <ActionIcon color="red">
                   <Heart size={16} />
                 </ActionIcon>
-                <ActionIcon onClick={() => setOpened(true)}>
+                <ActionIcon onClick={openReportModal}>
                   <Flag2 size={16} />
                 </ActionIcon>
               </Group>
@@ -99,27 +128,6 @@ export default function Category() {
           </Box>
         </Card>
       ))}
-      <Modal
-        opened={opened}
-        centered
-        overlayOpacity={0.5}
-        onClose={() => setOpened(false)}
-        title="Report post"
-        padding="xl"
-      >
-        <RadioGroup
-          orientation="vertical"
-          label="Please select a reason for reporting this post."
-          required
-          mb="lg"
-        >
-          <Radio value="harmful" label="Harmful content" />
-          <Radio value="hate" label="Hate speech" />
-          <Radio value="spam" label="Spam" />
-          <Radio value="incorrect" label="Posted in the wrong section" />
-        </RadioGroup>
-        <Button>Report post</Button>
-      </Modal>
     </SimpleGrid>
   );
 }

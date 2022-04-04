@@ -1,6 +1,6 @@
-import { Outlet, useLoaderData, NavLink } from "@remix-run/react";
+import { Box, createStyles, List } from "@mantine/core";
 import { LoaderFunction } from "@remix-run/node";
-import { createStyles, Box, List } from "@mantine/core";
+import { NavLink, Outlet, useLoaderData } from "@remix-run/react";
 import { getCategories } from "~/db/db.server";
 
 const useStyles = createStyles((theme) => ({

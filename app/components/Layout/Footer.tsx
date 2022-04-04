@@ -1,4 +1,3 @@
-import React from "react";
 import { createStyles, Container, Group, Anchor, Title } from "@mantine/core";
 
 const useStyles = createStyles((theme) => ({
@@ -50,7 +49,7 @@ export function Footer({ links }: FooterSimpleProps) {
   return (
     <div className={classes.footer}>
       <Container className={classes.inner} size="xl">
-        <Title order={4}>querie</Title>
+        <Title order={3}>querie</Title>
         <Group className={classes.links}>{items}</Group>
       </Container>
     </div>

@@ -1,28 +1,28 @@
-import { useState } from "react";
 import {
-  createStyles,
-  Container,
   Avatar,
-  UnstyledButton,
-  Group,
-  Text,
-  Menu,
-  Divider,
-  Burger,
-  Title,
-  Button,
   Box,
+  Burger,
+  Button,
+  Container,
+  createStyles,
+  Divider,
+  Group,
+  Menu,
+  Text,
+  Title,
+  UnstyledButton,
 } from "@mantine/core";
 import { useBooleanToggle } from "@mantine/hooks";
+import { Link, useSubmit } from "@remix-run/react";
+import { useState } from "react";
 import {
-  Logout,
+  ChartBar,
+  ChevronDown,
   Heart,
+  Logout,
   Message,
   Settings,
-  ChevronDown,
-  ChartBar,
 } from "tabler-icons-react";
-import { Link, useSubmit } from "@remix-run/react";
 
 const useStyles = createStyles((theme) => ({
   header: {

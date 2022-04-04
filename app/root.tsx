@@ -5,6 +5,13 @@ import {
   Container,
   MantineProvider,
 } from "@mantine/core";
+import { ModalsProvider } from "@mantine/modals";
+import { NotificationsProvider } from "@mantine/notifications";
+import type {
+  LinksFunction,
+  LoaderFunction,
+  MetaFunction,
+} from "@remix-run/node";
 import {
   Links,
   LiveReload,
@@ -14,16 +21,11 @@ import {
   ScrollRestoration,
   useLoaderData,
 } from "@remix-run/react";
-import type {
-  LoaderFunction,
-  MetaFunction,
-  LinksFunction,
-} from "@remix-run/node";
 import { useState } from "react";
 import { Navbar } from "~/components/Layout/Navbar";
-import { authenticator } from "./services/auth.server";
 import styles from "~/styles/globals.css";
 import { Footer } from "./components/Layout/Footer";
+import { authenticator } from "./services/auth.server";
 
 export const meta: MetaFunction = () => ({
   charset: "utf-8",
@@ -61,11 +63,19 @@ export default function App() {
         })}
       >
         <MantineTheme>
-          <Navbar user={user} />
-          <Container size="xl" role="main" mt="xl">
-            <Outlet />
-          </Container>
-          <Footer links={[{ link: "#", label: "Github" }]} />
+          <ModalsProvider>
+            <NotificationsProvider
+              limit={2}
+              autoClose={3000}
+              position="top-center"
+            >
+              <Navbar user={user} />
+              <Container size="xl" role="main" mt="xl">
+                <Outlet />
+              </Container>
+              <Footer links={[{ link: "#", label: "Github" }]} />
+            </NotificationsProvider>
+          </ModalsProvider>
         </MantineTheme>
 
         <ScrollRestoration />

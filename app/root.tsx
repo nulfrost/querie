@@ -3,6 +3,7 @@ import {
   ColorScheme,
   ColorSchemeProvider,
   Container,
+  createStyles,
   MantineProvider,
 } from "@mantine/core";
 import { ModalsProvider } from "@mantine/modals";
@@ -42,6 +43,18 @@ export const links: LinksFunction = () => {
   ];
 };
 
+const useStyles = createStyles((theme) => {
+  console.log(theme.colorScheme);
+  return {
+    body: {
+      backgroundColor:
+        theme.colorScheme === "dark"
+          ? theme.colors.dark[6]
+          : theme.colors.gray[2],
+    },
+  };
+});
+
 export const loader: LoaderFunction = async ({ request }) => {
   const user = await authenticator.isAuthenticated(request);
   return { user };
@@ -49,6 +62,7 @@ export const loader: LoaderFunction = async ({ request }) => {
 
 export default function App() {
   const user = useLoaderData();
+  const { classes } = useStyles();
 
   return (
     <html lang="en">
@@ -56,32 +70,33 @@ export default function App() {
         <Meta />
         <Links />
       </head>
-      <Box
-        component="body"
-        sx={(theme) => ({
-          backgroundColor: theme.colors.gray[2],
-        })}
-      >
-        <MantineTheme>
-          <ModalsProvider>
-            <NotificationsProvider
-              limit={2}
-              autoClose={3000}
-              position="top-center"
-            >
+      <MantineTheme>
+        <ModalsProvider>
+          <NotificationsProvider
+            limit={2}
+            autoClose={3000}
+            position="top-center"
+          >
+            <Box component="body" className={classes.body}>
               <Navbar user={user} />
               <Container size="xl" role="main" mt="xl">
                 <Outlet />
               </Container>
-              <Footer links={[{ link: "#", label: "Github" }]} />
-            </NotificationsProvider>
-          </ModalsProvider>
-        </MantineTheme>
-
-        <ScrollRestoration />
-        <Scripts />
-        <LiveReload />
-      </Box>
+              <Footer
+                links={[
+                  {
+                    link: "https://github.com/nulfrost/querie",
+                    label: "Github",
+                  },
+                ]}
+              />
+            </Box>
+          </NotificationsProvider>
+        </ModalsProvider>
+      </MantineTheme>
+      <ScrollRestoration />
+      <Scripts />
+      <LiveReload />
     </html>
   );
 }

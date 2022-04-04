@@ -1,34 +1,14 @@
-import { Button, Container, Stack, Text, Title } from "@mantine/core";
+import { Container, Stack, Text, Title } from "@mantine/core";
 import { LoaderFunction } from "@remix-run/node";
-import { Form } from "@remix-run/react";
 import { SocialsProvider } from "remix-auth-socials";
 import { authenticator } from "~/services/auth.server";
-
-interface SocialButtonProps {
-  provider: SocialsProvider;
-  label: string;
-  icon?: any;
-  color?: string;
-}
+import { SocialButton } from "~/components/ui";
 
 export const loader: LoaderFunction = async ({ request }) => {
   return await authenticator.isAuthenticated(request, {
     successRedirect: "/",
   });
 };
-
-const SocialButton: React.FC<SocialButtonProps> = ({
-  provider,
-  label,
-  icon,
-  color,
-}) => (
-  <Form action={`/auth/${provider}`} method="post" style={{ width: "30%" }}>
-    <Button leftIcon={icon} color={color} type="submit" fullWidth>
-      {label}
-    </Button>
-  </Form>
-);
 
 export default function Login() {
   return (

@@ -6,7 +6,10 @@ const useStyles = createStyles((theme) => ({
     borderTop: `1px solid ${
       theme.colorScheme === "dark" ? theme.colors.dark[5] : theme.colors.gray[2]
     }`,
-    backgroundColor: theme.colors.gray[0],
+    backgroundColor:
+      theme.colorScheme === "dark"
+        ? theme.colors.dark[6]
+        : theme.colors.gray[0],
   },
 
   inner: {
@@ -28,19 +31,19 @@ const useStyles = createStyles((theme) => ({
   },
 }));
 
-interface FooterSimpleProps {
+interface FooterProps {
   links: { link: string; label: string }[];
 }
 
-export function Footer({ links }: FooterSimpleProps) {
+export function Footer({ links }: FooterProps) {
   const { classes } = useStyles();
   const items = links.map((link) => (
     <Anchor<"a">
       color="dimmed"
       key={link.label}
       href={link.link}
-      onClick={(event) => event.preventDefault()}
       size="sm"
+      target="_blank"
     >
       {link.label}
     </Anchor>

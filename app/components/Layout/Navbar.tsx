@@ -11,9 +11,10 @@ import {
   Text,
   Title,
   UnstyledButton,
+  useMantineColorScheme,
 } from "@mantine/core";
 import { useBooleanToggle } from "@mantine/hooks";
-import { Link, useSubmit } from "@remix-run/react";
+import { Link, Links, useSubmit } from "@remix-run/react";
 import { useState } from "react";
 import {
   ChartBar,
@@ -21,7 +22,9 @@ import {
   Heart,
   Logout,
   Message,
+  Moon,
   Settings,
+  Sun,
 } from "tabler-icons-react";
 
 const useStyles = createStyles((theme) => ({
@@ -73,6 +76,7 @@ const useStyles = createStyles((theme) => ({
       display: "none",
     },
   },
+  logo: {},
 }));
 
 interface Props {
@@ -85,11 +89,22 @@ export function Navbar({ user }: Props) {
   const [userMenuOpened, setUserMenuOpened] = useState(false);
   const submit = useSubmit();
 
+  const { colorScheme, toggleColorScheme } = useMantineColorScheme();
+
   return (
     <Box component="header" className={classes.header}>
       <Container className={classes.mainSection} size="xl">
         <Group position="apart">
-          <Title order={3}>querie</Title>
+          <Text
+            component={Link}
+            to="/category"
+            weight={700}
+            size="xl"
+            variant="gradient"
+            gradient={{ from: "indigo", to: "cyan", deg: 45 }}
+          >
+            querie
+          </Text>
           <Burger
             opened={opened}
             onClick={() => toggleOpened()}
@@ -148,6 +163,18 @@ export function Navbar({ user }: Props) {
               <Menu.Label>Settings</Menu.Label>
               <Menu.Item icon={<Settings size={14} />}>
                 Account settings
+              </Menu.Item>
+              <Menu.Item
+                onClick={() => toggleColorScheme()}
+                icon={
+                  colorScheme === "light" ? (
+                    <Sun size={14} />
+                  ) : (
+                    <Moon size={14} />
+                  )
+                }
+              >
+                Current theme: {colorScheme}{" "}
               </Menu.Item>
               <Divider />
               <Menu.Item

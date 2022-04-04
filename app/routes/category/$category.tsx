@@ -4,17 +4,14 @@ import {
   Card,
   createStyles,
   Group,
-  Radio,
-  RadioGroup,
   SimpleGrid,
   Text,
   Title,
 } from "@mantine/core";
-import { useModals } from "@mantine/modals";
-import { showNotification } from "@mantine/notifications";
 import { LoaderFunction } from "@remix-run/node";
 import { Link, useLoaderData } from "@remix-run/react";
 import { Flag2, Heart } from "tabler-icons-react";
+import { useActionModals } from "~/hooks/useActionModals";
 
 const useStyles = createStyles((theme) => ({
   categories: {
@@ -28,6 +25,9 @@ const useStyles = createStyles((theme) => ({
   card: {
     border: `2px solid ${theme.colors.gray[3]}`,
   },
+  divider: {
+    border: `1px solid ${theme.colors.gray[1]}`,
+  },
 }));
 
 export const loader: LoaderFunction = async ({ params }) => {
@@ -37,37 +37,8 @@ export const loader: LoaderFunction = async ({ params }) => {
 
 export default function Category() {
   const data = useLoaderData();
-  const modals = useModals();
   const { classes } = useStyles();
-
-  const openReportModal = () => {
-    modals.openConfirmModal({
-      title: "Report post",
-      centered: true,
-      children: (
-        <RadioGroup
-          orientation="vertical"
-          label="Please select a reason for reporting this post."
-          required
-          mb="lg"
-        >
-          <Radio value="harmful" label="Harmful content" />
-          <Radio value="hate" label="Hate speech" />
-          <Radio value="spam" label="Spam" />
-          <Radio value="incorrect" label="Posted in the wrong section" />
-        </RadioGroup>
-      ),
-      labels: { confirm: "Report post", cancel: "Cancel" },
-      onCancel: () => console.log("Cancel"),
-      onConfirm: () => {
-        showNotification({
-          title: "Post reported",
-          message: "Thank you for reporting this post and keeping querie safe.",
-          color: "blue",
-        });
-      },
-    });
-  };
+  const { reportModal } = useActionModals();
 
   return (
     <SimpleGrid
@@ -120,7 +91,7 @@ export default function Category() {
                 <ActionIcon color="red">
                   <Heart size={16} />
                 </ActionIcon>
-                <ActionIcon onClick={openReportModal}>
+                <ActionIcon onClick={reportModal}>
                   <Flag2 size={16} />
                 </ActionIcon>
               </Group>

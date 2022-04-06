@@ -44,13 +44,14 @@ export const links: LinksFunction = () => {
 };
 
 const useStyles = createStyles((theme) => {
-  console.log(theme.colorScheme);
   return {
     body: {
       backgroundColor:
         theme.colorScheme === "dark"
           ? theme.colors.dark[6]
           : theme.colors.gray[2],
+      display: "flex",
+      flexDirection: "column",
     },
   };
 });
@@ -79,7 +80,7 @@ export default function App() {
           >
             <Box component="body" className={classes.body}>
               <Navbar user={user} />
-              <Container size="xl" role="main" mt="xl">
+              <Container size="xl" role="main" mt="xl" pb="xl">
                 <Outlet />
               </Container>
               <Footer

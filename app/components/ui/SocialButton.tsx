@@ -10,7 +10,7 @@ export type SocialButtonProps = {
 
 export function SocialButton({ provider, label, color }) {
   return (
-    <Form action={`/auth/${provider}`} method="post" style={{ width: "30%" }}>
+    <Form action={`/auth/${provider}`} method="post">
       <Button color={color} type="submit" fullWidth>
         {label}
       </Button>

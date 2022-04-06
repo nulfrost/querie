@@ -9,12 +9,11 @@ import {
   Group,
   Menu,
   Text,
-  Title,
   UnstyledButton,
   useMantineColorScheme,
 } from "@mantine/core";
 import { useBooleanToggle } from "@mantine/hooks";
-import { Link, Links, useSubmit } from "@remix-run/react";
+import { Link, useSubmit } from "@remix-run/react";
 import { useState } from "react";
 import {
   ChartBar,
@@ -119,77 +118,89 @@ export function Navbar({ user }: Props) {
             </Group>
           )}
           {user?.user && (
-            <Menu
-              size={260}
-              placement="end"
-              transition="pop-top-right"
-              className={classes.userMenu}
-              onClose={() => setUserMenuOpened(false)}
-              onOpen={() => setUserMenuOpened(true)}
-              control={
-                <UnstyledButton
-                  className={cx(classes.user, {
-                    [classes.userActive]: userMenuOpened,
-                  })}
+            <Group>
+              <Button component={Link} to="/question/new">
+                Ask
+              </Button>
+              <Menu
+                size={260}
+                placement="end"
+                transition="pop-top-right"
+                className={classes.userMenu}
+                onClose={() => setUserMenuOpened(false)}
+                onOpen={() => setUserMenuOpened(true)}
+                control={
+                  <UnstyledButton
+                    className={cx(classes.user, {
+                      [classes.userActive]: userMenuOpened,
+                    })}
+                  >
+                    <Group spacing={7}>
+                      <Avatar
+                        src={user?.user?.photos[0]?.value}
+                        alt={user?.user?.displayName}
+                        radius="xl"
+                        size={24}
+                      />
+                      <Text
+                        weight={500}
+                        size="sm"
+                        sx={{ lineHeight: 1 }}
+                        mr={3}
+                      >
+                        {user?.user?.displayName}
+                      </Text>
+                      <ChevronDown size={12} />
+                    </Group>
+                  </UnstyledButton>
+                }
+              >
+                <Menu.Item
+                  icon={<ChartBar size={14} color={theme.colors.indigo[6]} />}
                 >
-                  <Group spacing={7}>
-                    <Avatar
-                      src={user?.user?.photos[0]?.value}
-                      alt={user?.user?.displayName}
-                      radius="xl"
-                      size={24}
-                    />
-                    <Text weight={500} size="sm" sx={{ lineHeight: 1 }} mr={3}>
-                      {user?.user?.displayName}
-                    </Text>
-                    <ChevronDown size={12} />
-                  </Group>
-                </UnstyledButton>
-              }
-            >
-              <Menu.Item
-                icon={<ChartBar size={14} color={theme.colors.indigo[6]} />}
-              >
-                Leaderboard
-              </Menu.Item>
-              <Menu.Item icon={<Heart size={14} color={theme.colors.red[6]} />}>
-                Liked posts
-              </Menu.Item>
-              <Menu.Item
-                icon={<Message size={14} color={theme.colors.blue[6]} />}
-              >
-                Your comments
-              </Menu.Item>
-              <Menu.Label>Settings</Menu.Label>
-              <Menu.Item icon={<Settings size={14} />}>
-                Account settings
-              </Menu.Item>
-              <Menu.Item
-                onClick={() => toggleColorScheme()}
-                icon={
-                  colorScheme === "light" ? (
-                    <Sun size={14} />
-                  ) : (
-                    <Moon size={14} />
-                  )
-                }
-              >
-                Current theme: {colorScheme}{" "}
-              </Menu.Item>
-              <Divider />
-              <Menu.Item
-                icon={<Logout size={14} />}
-                onClick={() =>
-                  submit(null, {
-                    method: "post",
-                    action: "/logout",
-                    replace: true,
-                  })
-                }
-              >
-                Logout
-              </Menu.Item>
-            </Menu>
+                  Leaderboard
+                </Menu.Item>
+                <Menu.Item
+                  icon={<Heart size={14} color={theme.colors.red[6]} />}
+                >
+                  Liked posts
+                </Menu.Item>
+                <Menu.Item
+                  icon={<Message size={14} color={theme.colors.blue[6]} />}
+                >
+                  Your comments
+                </Menu.Item>
+                <Menu.Label>Settings</Menu.Label>
+                <Menu.Item icon={<Settings size={14} />}>
+                  Account settings
+                </Menu.Item>
+                <Menu.Item
+                  onClick={() => toggleColorScheme()}
+                  icon={
+                    colorScheme === "light" ? (
+                      <Sun size={14} />
+                    ) : (
+                      <Moon size={14} />
+                    )
+                  }
+                >
+                  Current theme: {colorScheme}{" "}
+                </Menu.Item>
+                <Divider />
+                <Menu.Item
+                  icon={<Logout size={14} />}
+                  onClick={() =>
+                    submit(null, {
+                      method: "post",
+                      action: "/logout",
+                      replace: true,
+                    })
+                  }
+                >
+                  Logout
+                </Menu.Item>
+              </Menu>
+            </Group>
           )}
         </Group>
       </Container>

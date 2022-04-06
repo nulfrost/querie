@@ -12,9 +12,11 @@ export const loader: LoaderFunction = async ({ request }) => {
 
 export default function Login() {
   return (
-    <Container mt="xl">
-      <Stack align="center">
-        <Title order={1}>Log in</Title>
+    <Container mt="xl" size="lg">
+      <Stack align="stretch">
+        <Title order={1} align="center">
+          Log in
+        </Title>
         <Text color="dimmed" size="sm">
           Continue with one of these providers
         </Text>

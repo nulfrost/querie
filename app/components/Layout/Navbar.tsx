@@ -162,7 +162,7 @@ export function Navbar({ user }: Props) {
                 <Menu.Item
                   component={Link}
                   to="/leaderboard"
-                  icon={<ChartBar size={14} color={theme.colors.indigo[6]} />}
+                  icon={<ChartBar size={14} />}
                 >
                   Leaderboard
                 </Menu.Item>

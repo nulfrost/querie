@@ -1,12 +1,11 @@
-import { createStyles, SimpleGrid, Title } from "@mantine/core";
+import { createStyles, Pagination, SimpleGrid, Title } from "@mantine/core";
 import { LoaderFunction } from "@remix-run/node";
 import { useLoaderData } from "@remix-run/react";
 import { CategoryCard } from "~/components/ui/Categories";
 
 const useStyles = createStyles((theme) => ({
   categories: {
-    margin: "0 -8px",
-    marginTop: theme.spacing.xl,
+    margin: `${theme.spacing.xl}px -8px`,
   },
 
   divider: {
@@ -24,17 +23,20 @@ export default function Category() {
   const { classes } = useStyles();
 
   return (
-    <SimpleGrid
-      className={classes.categories}
-      cols={1}
-      breakpoints={[
-        { minWidth: "xs", cols: 2 },
-        { minWidth: "lg", cols: 3 },
-      ]}
-    >
-      {Array.from({ length: 20 }, (_, index) => (
-        <CategoryCard category={data.category} />
-      ))}
-    </SimpleGrid>
+    <>
+      <SimpleGrid
+        className={classes.categories}
+        cols={1}
+        breakpoints={[
+          { minWidth: "xs", cols: 2 },
+          { minWidth: "lg", cols: 3 },
+        ]}
+      >
+        {Array.from({ length: 20 }, (_, index) => (
+          <CategoryCard category={data.category} key={index} />
+        ))}
+      </SimpleGrid>
+      <Pagination total={10} />
+    </>
   );
 }

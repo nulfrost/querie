@@ -17,7 +17,7 @@ export default function Category() {
     <>
       <Box component="nav">
         <Title order={1} mb="lg">
-          {category}
+          {category ? category : "Latest questions"}
         </Title>
         <Categories categories={data.categories} />
       </Box>

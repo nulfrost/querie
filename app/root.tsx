@@ -53,6 +53,9 @@ const useStyles = createStyles((theme) => {
       display: "flex",
       flexDirection: "column",
     },
+    container: {
+      width: "100%",
+    },
   };
 });
 
@@ -80,7 +83,13 @@ export default function App() {
           >
             <Box component="body" className={classes.body}>
               <Navbar user={user} />
-              <Container size="xl" role="main" mt="xl" pb="xl">
+              <Container
+                size="xl"
+                role="main"
+                mt="xl"
+                pb="xl"
+                className={classes.container}
+              >
                 <Outlet />
               </Container>
               <Footer

@@ -12,12 +12,18 @@ export const loader: LoaderFunction = async ({ request }) => {
 
 export default function Login() {
   return (
-    <Container mt="xl" size="lg">
+    <Container
+      mt="xl"
+      size="lg"
+      sx={{
+        maxWidth: "300px",
+      }}
+    >
       <Stack align="stretch">
         <Title order={1} align="center">
           Log in
         </Title>
-        <Text color="dimmed" size="sm">
+        <Text color="dimmed" size="sm" align="center">
           Continue with one of these providers
         </Text>
         <SocialButton

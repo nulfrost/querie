@@ -120,7 +120,7 @@ export function Navbar({ user }: Props) {
           {user?.user && (
             <Group>
               <Button component={Link} to="/question/new">
-                Ask
+                Ask a question
               </Button>
               <Menu
                 size={260}
@@ -156,11 +156,13 @@ export function Navbar({ user }: Props) {
                 }
               >
                 <Menu.Item
+                  component={Link}
+                  to="/leaderboard"
                   icon={<ChartBar size={14} color={theme.colors.indigo[6]} />}
                 >
                   Leaderboard
                 </Menu.Item>
-                <Menu.Item
+                {/* <Menu.Item
                   icon={<Heart size={14} color={theme.colors.red[6]} />}
                 >
                   Liked posts
@@ -169,7 +171,7 @@ export function Navbar({ user }: Props) {
                   icon={<Message size={14} color={theme.colors.blue[6]} />}
                 >
                   Your comments
-                </Menu.Item>
+                </Menu.Item> */}
                 <Menu.Label>Settings</Menu.Label>
                 <Menu.Item icon={<Settings size={14} />}>
                   Account settings

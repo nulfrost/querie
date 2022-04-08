@@ -1,4 +1,5 @@
 import {
+  Anchor,
   Avatar,
   Box,
   Burger,
@@ -111,7 +112,10 @@ export function Navbar({ user }: Props) {
             size="sm"
           />
           {!user?.user && (
-            <Group spacing={5} className={classes.links}>
+            <Group spacing={20} className={classes.links}>
+              <Anchor component={Link} to="/leaderboard">
+                Leaderboard
+              </Anchor>
               <Button component={Link} to="/login">
                 Login
               </Button>

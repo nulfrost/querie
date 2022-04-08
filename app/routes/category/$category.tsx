@@ -36,7 +36,7 @@ export default function Category() {
           <CategoryCard category={data.category} key={index} />
         ))}
       </SimpleGrid>
-      <Pagination total={10} />
+      <Pagination total={10} position="center" />
     </>
   );
 }

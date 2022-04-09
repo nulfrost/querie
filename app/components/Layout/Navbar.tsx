@@ -84,7 +84,7 @@ interface Props {
 }
 
 export function Navbar({ user }: Props) {
-  const { classes, theme, cx } = useStyles();
+  const { classes, cx } = useStyles();
   const [opened, toggleOpened] = useBooleanToggle(false);
   const [userMenuOpened, setUserMenuOpened] = useState(false);
   const submit = useSubmit();
@@ -111,7 +111,7 @@ export function Navbar({ user }: Props) {
             className={classes.burger}
             size="sm"
           />
-          {!user?.user && (
+          {!user?.user?.profile && (
             <Group spacing={20} className={classes.links}>
               <Anchor component={Link} to="/leaderboard">
                 Leaderboard
@@ -121,7 +121,7 @@ export function Navbar({ user }: Props) {
               </Button>
             </Group>
           )}
-          {user?.user && (
+          {user?.user?.profile && (
             <Group>
               <Button component={Link} to="/question/new">
                 Ask a question
@@ -141,8 +141,8 @@ export function Navbar({ user }: Props) {
                   >
                     <Group spacing={7}>
                       <Avatar
-                        src={user?.user?.photos[0]?.value}
-                        alt={user?.user?.displayName}
+                        src={user?.user?.profile?.image_url}
+                        alt={user?.user?.profile?.username}
                         radius="xl"
                         size={24}
                       />
@@ -152,7 +152,7 @@ export function Navbar({ user }: Props) {
                         sx={{ lineHeight: 1 }}
                         mr={3}
                       >
-                        {user?.user?.displayName}
+                        {user?.user?.profile?.username}
                       </Text>
                       <ChevronDown size={12} />
                     </Group>

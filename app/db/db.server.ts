@@ -130,21 +130,29 @@ export async function createQuestionLike({
 export async function findOrCreateUser(
   profile: GoogleProfile | DiscordProfile | GitHubProfile
 ) {
-  return prisma.user.upsert({
-    where: {
-      email: profile?.emails[0].value,
-    },
-    update: {
-      email: profile?.emails[0].value,
-      username: profile?.displayName,
-      connection: profile?.provider,
-      image_url: profile?.photos[0].value,
-    },
-    create: {
-      email: profile?.emails[0].value,
-      username: profile?.displayName,
-      connection: profile?.provider,
-      image_url: profile?.photos[0].value,
-    },
-  });
+  try {
+    const user = await prisma.user.upsert({
+      where: {
+        email: profile?.emails[0].value,
+      },
+      update: {
+        email: profile?.emails[0].value,
+        username: profile?.displayName,
+        connection: profile?.provider,
+        image_url: profile?.photos[0].value,
+      },
+      create: {
+        email: profile?.emails[0].value,
+        username: profile?.displayName,
+        connection: profile?.provider,
+        image_url: profile?.photos[0].value,
+      },
+    });
+    return {
+      profile: user,
+    };
+  } catch (error) {
+    console.log(error);
+    throw new Response("Server Error", { status: 500 });
+  }
 }

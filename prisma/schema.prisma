@@ -43,7 +43,7 @@ model Question {
 model Comment {
   id         String           @id @default(uuid())
   content    String
-  author     User             @relation(fields: [userId], references: [id])
+  author     User             @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId     String
   question   Question         @relation(fields: [questionId], references: [id], onDelete: Cascade)
   questionId String
@@ -55,7 +55,7 @@ model Comment {
 }
 
 model LikesOnQuestion {
-  user       User     @relation(fields: [userId], references: [id])
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId     String
   question   Question @relation(fields: [questionId], references: [id], onDelete: Cascade)
   questionId String
@@ -64,7 +64,7 @@ model LikesOnQuestion {
 }
 
 model LikesOnComment {
-  user      User    @relation(fields: [userId], references: [id])
+  user      User    @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId    String
   comment   Comment @relation(fields: [commentId], references: [id], onDelete: Cascade)
   commentId String

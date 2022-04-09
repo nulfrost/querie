@@ -6,6 +6,7 @@ import {
   TextInput,
   Title,
 } from "@mantine/core";
+import { User } from "@prisma/client";
 import { LoaderFunction, redirect, ActionFunction } from "@remix-run/node";
 import { Form, useLoaderData } from "@remix-run/react";
 import { createQuestion, getCategories } from "~/db/db.server";
@@ -19,7 +20,7 @@ export const action: ActionFunction = async ({ request }) => {
 
   const user = await authenticator.isAuthenticated(request);
 
-  // await createQuestion({title, description, category, userId: user?.id})
+  //await createQuestion({title, description, category, userId: user?.profile?.id})
 
   console.log(user);
 

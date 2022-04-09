@@ -133,10 +133,9 @@ export async function findOrCreateUser(
   try {
     const user = await prisma.user.upsert({
       where: {
-        email: profile?.emails[0].value,
+        email: profile?.emails[0]?.value,
       },
       update: {
-        email: profile?.emails[0].value,
         username: profile?.displayName,
         connection: profile?.provider,
         image_url: profile?.photos[0].value,
@@ -152,7 +151,7 @@ export async function findOrCreateUser(
       profile: user,
     };
   } catch (error) {
-    console.log(error);
+    console.error(error);
     throw new Response("Server Error", { status: 500 });
   }
 }

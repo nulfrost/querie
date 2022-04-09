@@ -1,4 +1,9 @@
 import { PrismaClient } from "@prisma/client";
+import {
+  DiscordProfile,
+  GitHubProfile,
+  GoogleProfile,
+} from "remix-auth-socials";
 
 interface CustomNodeJsGlobal extends NodeJS.Global {
   prisma: PrismaClient;
@@ -118,6 +123,28 @@ export async function createQuestionLike({
           userId,
         },
       },
+    },
+  });
+}
+
+export async function findOrCreateUser(
+  profile: GoogleProfile | DiscordProfile | GitHubProfile
+) {
+  return prisma.user.upsert({
+    where: {
+      email: profile?.emails[0].value,
+    },
+    update: {
+      email: profile?.emails[0].value,
+      username: profile?.displayName,
+      connection: profile?.provider,
+      image_url: profile?.photos[0].value,
+    },
+    create: {
+      email: profile?.emails[0].value,
+      username: profile?.displayName,
+      connection: profile?.provider,
+      image_url: profile?.photos[0].value,
     },
   });
 }

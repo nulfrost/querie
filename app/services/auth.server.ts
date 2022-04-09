@@ -6,6 +6,7 @@ import {
   GitHubStrategy,
   DiscordStrategy,
 } from "remix-auth-socials";
+import { findOrCreateUser } from "~/db/db.server";
 
 export let authenticator = new Authenticator(sessionStorage, {
   sessionKey: "__session",
@@ -19,7 +20,9 @@ authenticator.use(
       callbackURL: `http://localhost:3000/auth/${SocialsProvider.GOOGLE}/callback`,
     },
     async ({ profile }) => {
-      return profile;
+      const user = await findOrCreateUser(profile);
+
+      return user;
     }
   )
 );
@@ -32,7 +35,9 @@ authenticator.use(
       callbackURL: `http://localhost:3000/auth/${SocialsProvider.DISCORD}/callback`,
     },
     async ({ profile }) => {
-      return profile;
+      const user = await findOrCreateUser(profile);
+
+      return user;
     }
   )
 );
@@ -45,7 +50,9 @@ authenticator.use(
       callbackURL: `http://localhost:3000/auth/${SocialsProvider.GITHUB}/callback`,
     },
     async ({ profile }) => {
-      return profile;
+      const user = await findOrCreateUser(profile);
+
+      return user;
     }
   )
 );

@@ -6,9 +6,8 @@ import {
   TextInput,
   Title,
 } from "@mantine/core";
-import { User } from "@prisma/client";
 import { LoaderFunction, redirect, ActionFunction } from "@remix-run/node";
-import { Form, useLoaderData } from "@remix-run/react";
+import { Form, useLoaderData, useTransition } from "@remix-run/react";
 import { createQuestion, getCategories } from "~/db/db.server";
 import { authenticator } from "~/services/auth.server";
 
@@ -28,7 +27,7 @@ export const action: ActionFunction = async ({ request }) => {
     userId: user?.profile?.id,
   });
 
-  return {};
+  return redirect(`/category/${category.toLowerCase()}`);
 };
 
 export const loader: LoaderFunction = async ({ request }) => {
@@ -47,6 +46,7 @@ export const loader: LoaderFunction = async ({ request }) => {
 
 export default function New() {
   const { categoryNames } = useLoaderData();
+  const transition = useTransition();
 
   return (
     <Box
@@ -87,7 +87,12 @@ export default function New() {
           required
           mb="sm"
         />
-        <Button sx={{ alignSelf: "flex-end" }} type="submit">
+        <Button
+          sx={{ alignSelf: "flex-end" }}
+          type="submit"
+          loading={transition.state === "submitting"}
+          disabled={transition.state === "submitting"}
+        >
           Post question
         </Button>
       </Box>

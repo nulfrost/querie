@@ -1,12 +1,10 @@
 generator client {
-  provider        = "prisma-client-js"
-  previewFeatures = ["referentialIntegrity"]
+  provider = "prisma-client-js"
 }
 
 datasource db {
-  provider             = "mysql"
-  url                  = env("DATABASE_URL")
-  referentialIntegrity = "prisma"
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
 }
 
 model User {
@@ -28,14 +26,14 @@ model Question {
   id          String            @id @default(uuid())
   title       String
   description String
-  author      User              @relation(fields: [userId], references: [id], onDelete: Cascade)
-  userId      String
-  category    Category          @relation(fields: [categoryId], references: [id])
+  author      User?             @relation(fields: [userId], references: [id])
+  userId      String?
+  category    Category?         @relation(fields: [categoryId], references: [id])
   comments    Comment[]
   createdAt   DateTime          @default(now())
   updatedAt   DateTime          @default(now())
   likes       LikesOnQuestion[]
-  categoryId  Int
+  categoryId  Int?
 
   @@map("questions")
 }
@@ -43,10 +41,10 @@ model Question {
 model Comment {
   id         String           @id @default(uuid())
   content    String
-  author     User             @relation(fields: [userId], references: [id], onDelete: Cascade)
-  userId     String
-  question   Question         @relation(fields: [questionId], references: [id], onDelete: Cascade)
-  questionId String
+  author     User?            @relation(fields: [userId], references: [id])
+  userId     String?
+  question   Question?        @relation(fields: [questionId], references: [id])
+  questionId String?
   createdAt  DateTime         @default(now())
   updatedAt  DateTime         @default(now())
   likes      LikesOnComment[]
@@ -55,18 +53,18 @@ model Comment {
 }
 
 model LikesOnQuestion {
-  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user       User     @relation(fields: [userId], references: [id])
   userId     String
-  question   Question @relation(fields: [questionId], references: [id], onDelete: Cascade)
+  question   Question @relation(fields: [questionId], references: [id])
   questionId String
 
   @@id([userId, questionId])
 }
 
 model LikesOnComment {
-  user      User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user      User    @relation(fields: [userId], references: [id])
   userId    String
-  comment   Comment @relation(fields: [commentId], references: [id], onDelete: Cascade)
+  comment   Comment @relation(fields: [commentId], references: [id])
   commentId String
 
 
@@ -80,26 +78,3 @@ model Category {
 
   @@map("categories")
 }
-
-// enum Tag {
-//   ARTS
-//   BEAUTY
-//   BUSINESS
-//   CARS
-//   COMPUTERS
-//   ELECTRONICS
-//   FOOD
-//   EDUCATION
-//   ENTERTAINMENT
-//   ENVIRONMENT
-//   RELATIONSHIPS
-//   GAMES
-//   HEALTH
-//   GARDENING
-//   PETS
-//   PARENTING
-//   SCIENCE
-//   CULTURE
-//   SPORTS
-//   TRAVEL
-// }

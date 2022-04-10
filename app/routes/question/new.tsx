@@ -20,9 +20,13 @@ export const action: ActionFunction = async ({ request }) => {
 
   const user = await authenticator.isAuthenticated(request);
 
-  //await createQuestion({title, description, category, userId: user?.profile?.id})
-
-  console.log(user);
+  await createQuestion({
+    title,
+    description,
+    category,
+    //@ts-ignore
+    userId: user?.profile?.id,
+  });
 
   return {};
 };
@@ -67,6 +71,7 @@ export default function New() {
         <TextInput label="Title" name="title" required maxLength={30} mb="sm" />
         <Textarea
           label="Description"
+          name="description"
           required
           autosize
           minRows={10}
@@ -77,6 +82,7 @@ export default function New() {
         <NativeSelect
           data={categoryNames}
           label="Category"
+          name="category"
           placeholder="Choose a category"
           required
           mb="sm"

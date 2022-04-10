@@ -20,9 +20,13 @@ authenticator.use(
       callbackURL: `http://localhost:3000/auth/${SocialsProvider.GOOGLE}/callback`,
     },
     async ({ profile }) => {
-      const user = await findOrCreateUser(profile);
+      try {
+        const user = await findOrCreateUser(profile);
 
-      return user;
+        return { profile: user };
+      } catch (e) {
+        console.error(e);
+      }
     }
   )
 );
@@ -35,9 +39,13 @@ authenticator.use(
       callbackURL: `http://localhost:3000/auth/${SocialsProvider.DISCORD}/callback`,
     },
     async ({ profile }) => {
-      const user = await findOrCreateUser(profile);
+      try {
+        const user = await findOrCreateUser(profile);
 
-      return user;
+        return { profile: user };
+      } catch (e) {
+        console.error(e);
+      }
     }
   )
 );
@@ -50,9 +58,13 @@ authenticator.use(
       callbackURL: `http://localhost:3000/auth/${SocialsProvider.GITHUB}/callback`,
     },
     async ({ profile }) => {
-      const user = await findOrCreateUser(profile);
+      try {
+        const user = await findOrCreateUser(profile);
 
-      return user;
+        return { profile: user };
+      } catch (e) {
+        console.error(e);
+      }
     }
   )
 );

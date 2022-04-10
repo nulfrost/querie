@@ -69,6 +69,7 @@ model LikesOnComment {
   comment   Comment @relation(fields: [commentId], references: [id], onDelete: Cascade)
   commentId String
 
+
   @@id([userId, commentId])
 }
 

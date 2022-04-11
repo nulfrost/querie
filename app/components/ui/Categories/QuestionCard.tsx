@@ -8,6 +8,7 @@ import {
   Title,
   Menu,
 } from "@mantine/core";
+import { Question } from "@prisma/client";
 import { Link } from "@remix-run/react";
 import { Flag2, Heart, Copy } from "tabler-icons-react";
 import { useActionModals } from "~/hooks/useActionModals";
@@ -19,10 +20,27 @@ const useStyles = createStyles((theme) => ({
   },
   card: {
     border: `2px solid ${theme.colors.gray[3]}`,
+    display: "flex",
+    flexDirection: "column",
   },
 }));
 
-export function CategoryCard({ category }) {
+type QuestionCardProps = Question & {
+  category: {
+    name: string;
+  };
+  author: {
+    username: string;
+  };
+};
+
+export function QuestionCard({
+  createdAt,
+  description,
+  title,
+  author,
+  category,
+}: Partial<QuestionCardProps>) {
   const { reportModal } = useActionModals();
 
   const { classes } = useStyles();
@@ -32,17 +50,17 @@ export function CategoryCard({ category }) {
       <Group>
         <Box>
           <Text
-            to={`/category/${category}`}
+            to={`/category/${category.name.toLowerCase()}`}
             size="xs"
             component={Link}
             className={classes.category}
             variant="link"
           >
-            {category}
+            {category.name}
           </Text>{" "}
           &sim;{" "}
           <Text size="xs" component="span" color="dimmed">
-            posted by dane
+            posted by {author.username}
           </Text>
         </Box>
         {/* <ActionIcon color="red" ml="auto">
@@ -63,17 +81,14 @@ export function CategoryCard({ category }) {
           fontSize: theme.fontSizes.lg,
         })}
       >
-        {category}
+        {title}
       </Title>
       <section>
-        <Text color="dimmed" lineClamp={2} size="sm">
-          Lorem ipsum dolor sit amet, consectetur adipisicing elit. Est
-          asperiores magnam eveniet perferendis nulla nam, cupiditate cum iure
-          saepe provident molestias molestiae possimus quam harum consectetur
-          non eligendi facilis omnis.
+        <Text color="dimmed" lineClamp={2} size="sm" mb="lg">
+          {description}
         </Text>
       </section>
-      <Box component="footer" mt="lg">
+      <Box component="footer" mt="auto">
         <Group align="baseline" position="apart">
           <Text variant="link" size="sm">
             78 comments

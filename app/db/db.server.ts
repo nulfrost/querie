@@ -19,11 +19,53 @@ export async function getCategories() {
   return prisma.category.findMany();
 }
 
-export async function getLatestQuestionsForCategory(category?: string) {
+export async function getLatestQuestionsForCategory(
+  category?: string,
+  page = 0
+) {
+  if (!category) {
+    return prisma.question.findMany({
+      take: 22,
+      skip: 22 * page,
+      orderBy: {
+        createdAt: "asc",
+      },
+      include: {
+        category: {
+          select: {
+            name: true,
+          },
+        },
+        author: {
+          select: {
+            username: true,
+          },
+        },
+      },
+    });
+  }
+
   return prisma.question.findMany({
+    take: 22,
+    skip: 22 * page,
     where: {
       category: {
-        name: category ?? "",
+        name: category,
+      },
+    },
+    orderBy: {
+      createdAt: "asc",
+    },
+    include: {
+      category: {
+        select: {
+          name: true,
+        },
+      },
+      author: {
+        select: {
+          username: true,
+        },
       },
     },
   });

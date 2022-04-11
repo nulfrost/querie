@@ -285,6 +285,53 @@ if (true)
 async function getCategories() {
   return prisma.category.findMany();
 }
+async function getLatestQuestionsForCategory(category, page = 0) {
+  if (!category) {
+    return prisma.question.findMany({
+      take: 22,
+      skip: 22 * page,
+      orderBy: {
+        createdAt: "asc"
+      },
+      include: {
+        category: {
+          select: {
+            name: true
+          }
+        },
+        author: {
+          select: {
+            username: true
+          }
+        }
+      }
+    });
+  }
+  return prisma.question.findMany({
+    take: 22,
+    skip: 22 * page,
+    where: {
+      category: {
+        name: category
+      }
+    },
+    orderBy: {
+      createdAt: "asc"
+    },
+    include: {
+      category: {
+        select: {
+          name: true
+        }
+      },
+      author: {
+        select: {
+          username: true
+        }
+      }
+    }
+  });
+}
 async function createQuestion({
   title,
   description,
@@ -704,9 +751,10 @@ __export(category_exports2, {
   loader: () => loader6
 });
 var import_core12 = require("@mantine/core");
+var import_node4 = require("@remix-run/node");
 var import_react11 = require("@remix-run/react");
 
-// app/components/ui/Categories/CategoryCard.tsx
+// app/components/ui/Categories/QuestionCard.tsx
 var import_core11 = require("@mantine/core");
 var import_react10 = require("@remix-run/react");
 var import_tabler_icons_react2 = require("tabler-icons-react");
@@ -755,33 +803,41 @@ function useActionModals() {
   return { reportModal };
 }
 
-// app/components/ui/Categories/CategoryCard.tsx
+// app/components/ui/Categories/QuestionCard.tsx
 var useStyles6 = (0, import_core11.createStyles)((theme) => ({
   category: {
     color: theme.colors.blue[5],
     fontWeight: 700
   },
   card: {
-    border: `2px solid ${theme.colors.gray[3]}`
+    border: `2px solid ${theme.colors.gray[3]}`,
+    display: "flex",
+    flexDirection: "column"
   }
 }));
-function CategoryCard({ category }) {
+function QuestionCard({
+  createdAt,
+  description,
+  title,
+  author,
+  category
+}) {
   const { reportModal } = useActionModals();
   const { classes } = useStyles6();
   return /* @__PURE__ */ React.createElement(import_core11.Card, {
     component: "article",
     className: classes.card
   }, /* @__PURE__ */ React.createElement(import_core11.Group, null, /* @__PURE__ */ React.createElement(import_core11.Box, null, /* @__PURE__ */ React.createElement(import_core11.Text, {
-    to: `/category/${category}`,
+    to: `/category/${category.name.toLowerCase()}`,
     size: "xs",
     component: import_react10.Link,
     className: classes.category,
     variant: "link"
-  }, category), " ", "\u223C", " ", /* @__PURE__ */ React.createElement(import_core11.Text, {
+  }, category.name), " ", "\u223C", " ", /* @__PURE__ */ React.createElement(import_core11.Text, {
     size: "xs",
     component: "span",
     color: "dimmed"
-  }, "posted by dane")), /* @__PURE__ */ React.createElement(import_core11.Menu, {
+  }, "posted by ", author.username)), /* @__PURE__ */ React.createElement(import_core11.Menu, {
     ml: "auto"
   }, /* @__PURE__ */ React.createElement(import_core11.Menu.Label, null, "Post options"), /* @__PURE__ */ React.createElement(import_core11.Menu.Item, {
     icon: /* @__PURE__ */ React.createElement(import_tabler_icons_react2.Copy, {
@@ -798,13 +854,14 @@ function CategoryCard({ category }) {
     sx: (theme) => ({
       fontSize: theme.fontSizes.lg
     })
-  }, category), /* @__PURE__ */ React.createElement("section", null, /* @__PURE__ */ React.createElement(import_core11.Text, {
+  }, title), /* @__PURE__ */ React.createElement("section", null, /* @__PURE__ */ React.createElement(import_core11.Text, {
     color: "dimmed",
     lineClamp: 2,
-    size: "sm"
-  }, "Lorem ipsum dolor sit amet, consectetur adipisicing elit. Est asperiores magnam eveniet perferendis nulla nam, cupiditate cum iure saepe provident molestias molestiae possimus quam harum consectetur non eligendi facilis omnis.")), /* @__PURE__ */ React.createElement(import_core11.Box, {
+    size: "sm",
+    mb: "lg"
+  }, description)), /* @__PURE__ */ React.createElement(import_core11.Box, {
     component: "footer",
-    mt: "lg"
+    mt: "auto"
   }, /* @__PURE__ */ React.createElement(import_core11.Group, {
     align: "baseline",
     position: "apart"
@@ -831,11 +888,11 @@ var useStyles7 = (0, import_core12.createStyles)((theme) => ({
   }
 }));
 var loader6 = async ({ params }) => {
-  const category = params.category;
-  return { category };
+  const questions = await getLatestQuestionsForCategory(params.category[0].toUpperCase() + params.category.slice(1));
+  return (0, import_node4.json)(questions);
 };
 function Category2() {
-  const data = (0, import_react11.useLoaderData)();
+  const questions = (0, import_react11.useLoaderData)();
   const { classes } = useStyles7();
   return /* @__PURE__ */ React.createElement(React.Fragment, null, /* @__PURE__ */ React.createElement(import_core12.SimpleGrid, {
     className: classes.categories,
@@ -844,10 +901,14 @@ function Category2() {
       { minWidth: "xs", cols: 2 },
       { minWidth: "lg", cols: 3 }
     ]
-  }, Array.from({ length: 20 }, (_, index) => /* @__PURE__ */ React.createElement(CategoryCard, {
-    category: data.category,
-    key: index
-  }))), /* @__PURE__ */ React.createElement(import_core12.Pagination, {
+  }, questions.map(({ id, title, description, createdAt, category, author }) => /* @__PURE__ */ React.createElement(QuestionCard, {
+    key: id,
+    title,
+    description,
+    createdAt,
+    category,
+    author
+  }))), questions.length > 22 && /* @__PURE__ */ React.createElement(import_core12.Pagination, {
     total: 10,
     position: "center"
   }));
@@ -856,13 +917,45 @@ function Category2() {
 // route:/Users/dane/Desktop/github/react/querie/app/routes/category/index.tsx
 var category_exports3 = {};
 __export(category_exports3, {
-  default: () => Index
+  default: () => Index,
+  loader: () => loader7
 });
 var import_core13 = require("@mantine/core");
+var import_node5 = require("@remix-run/node");
+var import_react12 = require("@remix-run/react");
+var useStyles8 = (0, import_core13.createStyles)((theme) => ({
+  categories: {
+    margin: `${theme.spacing.xl}px -8px`
+  },
+  divider: {
+    border: `1px solid ${theme.colors.gray[1]}`
+  }
+}));
+var loader7 = async () => {
+  const questions = await getLatestQuestionsForCategory();
+  return (0, import_node5.json)(questions);
+};
 function Index() {
-  return /* @__PURE__ */ React.createElement(import_core13.Box, {
-    mt: "xl"
-  }, /* @__PURE__ */ React.createElement("div", null, "this is something"));
+  const { classes } = useStyles8();
+  const questions = (0, import_react12.useLoaderData)();
+  return /* @__PURE__ */ React.createElement(React.Fragment, null, /* @__PURE__ */ React.createElement(import_core13.SimpleGrid, {
+    className: classes.categories,
+    cols: 1,
+    breakpoints: [
+      { minWidth: "xs", cols: 2 },
+      { minWidth: "lg", cols: 3 }
+    ]
+  }, questions.map(({ id, title, description, createdAt, category, author }) => /* @__PURE__ */ React.createElement(QuestionCard, {
+    key: id,
+    title,
+    description,
+    createdAt,
+    category,
+    author
+  }))), questions.length > 22 && /* @__PURE__ */ React.createElement(import_core13.Pagination, {
+    total: 10,
+    position: "center"
+  }));
 }
 
 // route:/Users/dane/Desktop/github/react/querie/app/routes/logout.tsx
@@ -877,22 +970,22 @@ var action3 = async ({ request }) => {
 // route:/Users/dane/Desktop/github/react/querie/app/routes/index.tsx
 var routes_exports = {};
 __export(routes_exports, {
-  loader: () => loader7
+  loader: () => loader8
 });
-var import_node4 = require("@remix-run/node");
-var loader7 = () => {
-  return (0, import_node4.redirect)("/category");
+var import_node6 = require("@remix-run/node");
+var loader8 = () => {
+  return (0, import_node6.redirect)("/category");
 };
 
 // route:/Users/dane/Desktop/github/react/querie/app/routes/login.tsx
 var login_exports = {};
 __export(login_exports, {
   default: () => Login,
-  loader: () => loader8
+  loader: () => loader9
 });
 var import_core14 = require("@mantine/core");
 var import_remix_auth_socials2 = require("remix-auth-socials");
-var loader8 = async ({ request }) => {
+var loader9 = async ({ request }) => {
   return await authenticator.isAuthenticated(request, {
     successRedirect: "/"
   });
@@ -929,7 +1022,7 @@ function Login() {
 }
 
 // server-assets-manifest:@remix-run/dev/assets-manifest
-var assets_manifest_default = { "version": "47608cd3", "entry": { "module": "/build/entry.client-46ZM4CJF.js", "imports": ["/build/_shared/chunk-XMAPAHPP.js", "/build/_shared/chunk-EE5I7FND.js", "/build/_shared/chunk-PWHP4PGH.js"] }, "routes": { "root": { "id": "root", "parentId": void 0, "path": "", "index": void 0, "caseSensitive": void 0, "module": "/build/root-FV3DCK3X.js", "imports": ["/build/_shared/chunk-VATDEGXK.js", "/build/_shared/chunk-V3CJQR62.js"], "hasAction": false, "hasLoader": true, "hasCatchBoundary": false, "hasErrorBoundary": false }, "routes/auth/$provider": { "id": "routes/auth/$provider", "parentId": "root", "path": "auth/:provider", "index": void 0, "caseSensitive": void 0, "module": "/build/routes/auth/$provider-BIBOWH7N.js", "imports": void 0, "hasAction": true, "hasLoader": true, "hasCatchBoundary": false, "hasErrorBoundary": false }, "routes/auth/$provider.callback": { "id": "routes/auth/$provider.callback", "parentId": "root", "path": "auth/:provider/callback", "index": void 0, "caseSensitive": void 0, "module": "/build/routes/auth/$provider.callback-5S4SGR5P.js", "imports": void 0, "hasAction": false, "hasLoader": true, "hasCatchBoundary": false, "hasErrorBoundary": false }, "routes/category": { "id": "routes/category", "parentId": "root", "path": "category", "index": void 0, "caseSensitive": void 0, "module": "/build/routes/category-WHCQ6EPP.js", "imports": ["/build/_shared/chunk-7FM6Z6JK.js"], "hasAction": false, "hasLoader": true, "hasCatchBoundary": false, "hasErrorBoundary": false }, "routes/category/$category": { "id": "routes/category/$category", "parentId": "routes/category", "path": ":category", "index": void 0, "caseSensitive": void 0, "module": "/build/routes/category/$category-42ZIDAZO.js", "imports": ["/build/_shared/chunk-VATDEGXK.js", "/build/_shared/chunk-V3CJQR62.js"], "hasAction": false, "hasLoader": true, "hasCatchBoundary": false, "hasErrorBoundary": false }, "routes/category/index": { "id": "routes/category/index", "parentId": "routes/category", "path": void 0, "index": true, "caseSensitive": void 0, "module": "/build/routes/category/index-N6YUBVWP.js", "imports": ["/build/_shared/chunk-V3CJQR62.js"], "hasAction": false, "hasLoader": false, "hasCatchBoundary": false, "hasErrorBoundary": false }, "routes/index": { "id": "routes/index", "parentId": "root", "path": void 0, "index": true, "caseSensitive": void 0, "module": "/build/routes/index-DEM7L523.js", "imports": void 0, "hasAction": false, "hasLoader": true, "hasCatchBoundary": false, "hasErrorBoundary": false }, "routes/leaderboard": { "id": "routes/leaderboard", "parentId": "root", "path": "leaderboard", "index": void 0, "caseSensitive": void 0, "module": "/build/routes/leaderboard-XRF2EFL5.js", "imports": void 0, "hasAction": false, "hasLoader": false, "hasCatchBoundary": false, "hasErrorBoundary": false }, "routes/login": { "id": "routes/login", "parentId": "root", "path": "login", "index": void 0, "caseSensitive": void 0, "module": "/build/routes/login-35B652CI.js", "imports": ["/build/_shared/chunk-DZ6QUBUY.js"], "hasAction": false, "hasLoader": true, "hasCatchBoundary": false, "hasErrorBoundary": false }, "routes/logout": { "id": "routes/logout", "parentId": "root", "path": "logout", "index": void 0, "caseSensitive": void 0, "module": "/build/routes/logout-C5SNCLE7.js", "imports": void 0, "hasAction": true, "hasLoader": false, "hasCatchBoundary": false, "hasErrorBoundary": false }, "routes/question/new": { "id": "routes/question/new", "parentId": "root", "path": "question/new", "index": void 0, "caseSensitive": void 0, "module": "/build/routes/question/new-QZUSFMLW.js", "imports": ["/build/_shared/chunk-DZ6QUBUY.js", "/build/_shared/chunk-7FM6Z6JK.js"], "hasAction": true, "hasLoader": true, "hasCatchBoundary": false, "hasErrorBoundary": false } }, "url": "/build/manifest-47608CD3.js" };
+var assets_manifest_default = { "version": "c5988bcd", "entry": { "module": "/build/entry.client-46ZM4CJF.js", "imports": ["/build/_shared/chunk-XMAPAHPP.js", "/build/_shared/chunk-EE5I7FND.js", "/build/_shared/chunk-PWHP4PGH.js"] }, "routes": { "root": { "id": "root", "parentId": void 0, "path": "", "index": void 0, "caseSensitive": void 0, "module": "/build/root-FV3DCK3X.js", "imports": ["/build/_shared/chunk-VATDEGXK.js", "/build/_shared/chunk-V3CJQR62.js"], "hasAction": false, "hasLoader": true, "hasCatchBoundary": false, "hasErrorBoundary": false }, "routes/auth/$provider": { "id": "routes/auth/$provider", "parentId": "root", "path": "auth/:provider", "index": void 0, "caseSensitive": void 0, "module": "/build/routes/auth/$provider-BIBOWH7N.js", "imports": void 0, "hasAction": true, "hasLoader": true, "hasCatchBoundary": false, "hasErrorBoundary": false }, "routes/auth/$provider.callback": { "id": "routes/auth/$provider.callback", "parentId": "root", "path": "auth/:provider/callback", "index": void 0, "caseSensitive": void 0, "module": "/build/routes/auth/$provider.callback-5S4SGR5P.js", "imports": void 0, "hasAction": false, "hasLoader": true, "hasCatchBoundary": false, "hasErrorBoundary": false }, "routes/category": { "id": "routes/category", "parentId": "root", "path": "category", "index": void 0, "caseSensitive": void 0, "module": "/build/routes/category-WHCQ6EPP.js", "imports": ["/build/_shared/chunk-7FM6Z6JK.js"], "hasAction": false, "hasLoader": true, "hasCatchBoundary": false, "hasErrorBoundary": false }, "routes/category/$category": { "id": "routes/category/$category", "parentId": "routes/category", "path": ":category", "index": void 0, "caseSensitive": void 0, "module": "/build/routes/category/$category-NR27RZXI.js", "imports": ["/build/_shared/chunk-RHOK6MQB.js", "/build/_shared/chunk-VATDEGXK.js", "/build/_shared/chunk-V3CJQR62.js"], "hasAction": false, "hasLoader": true, "hasCatchBoundary": false, "hasErrorBoundary": false }, "routes/category/index": { "id": "routes/category/index", "parentId": "routes/category", "path": void 0, "index": true, "caseSensitive": void 0, "module": "/build/routes/category/index-2ZOP7BH3.js", "imports": ["/build/_shared/chunk-RHOK6MQB.js", "/build/_shared/chunk-VATDEGXK.js", "/build/_shared/chunk-V3CJQR62.js"], "hasAction": false, "hasLoader": true, "hasCatchBoundary": false, "hasErrorBoundary": false }, "routes/index": { "id": "routes/index", "parentId": "root", "path": void 0, "index": true, "caseSensitive": void 0, "module": "/build/routes/index-DEM7L523.js", "imports": void 0, "hasAction": false, "hasLoader": true, "hasCatchBoundary": false, "hasErrorBoundary": false }, "routes/leaderboard": { "id": "routes/leaderboard", "parentId": "root", "path": "leaderboard", "index": void 0, "caseSensitive": void 0, "module": "/build/routes/leaderboard-XRF2EFL5.js", "imports": void 0, "hasAction": false, "hasLoader": false, "hasCatchBoundary": false, "hasErrorBoundary": false }, "routes/login": { "id": "routes/login", "parentId": "root", "path": "login", "index": void 0, "caseSensitive": void 0, "module": "/build/routes/login-35B652CI.js", "imports": ["/build/_shared/chunk-DZ6QUBUY.js"], "hasAction": false, "hasLoader": true, "hasCatchBoundary": false, "hasErrorBoundary": false }, "routes/logout": { "id": "routes/logout", "parentId": "root", "path": "logout", "index": void 0, "caseSensitive": void 0, "module": "/build/routes/logout-C5SNCLE7.js", "imports": void 0, "hasAction": true, "hasLoader": false, "hasCatchBoundary": false, "hasErrorBoundary": false }, "routes/question/new": { "id": "routes/question/new", "parentId": "root", "path": "question/new", "index": void 0, "caseSensitive": void 0, "module": "/build/routes/question/new-QZUSFMLW.js", "imports": ["/build/_shared/chunk-DZ6QUBUY.js", "/build/_shared/chunk-7FM6Z6JK.js"], "hasAction": true, "hasLoader": true, "hasCatchBoundary": false, "hasErrorBoundary": false } }, "url": "/build/manifest-C5988BCD.js" };
 
 // server-entry-module:@remix-run/dev/server-build
 var entry = { module: entry_server_exports };

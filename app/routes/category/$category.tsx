@@ -1,7 +1,9 @@
 import { createStyles, Pagination, SimpleGrid, Title } from "@mantine/core";
-import { LoaderFunction } from "@remix-run/node";
+import { Question } from "@prisma/client";
+import { json, LoaderFunction } from "@remix-run/node";
 import { useLoaderData } from "@remix-run/react";
-import { CategoryCard } from "~/components/ui/Categories";
+import { QuestionCard } from "~/components/ui/Categories";
+import { getLatestQuestionsForCategory } from "~/db/db.server";
 
 const useStyles = createStyles((theme) => ({
   categories: {
@@ -14,12 +16,23 @@ const useStyles = createStyles((theme) => ({
 }));
 
 export const loader: LoaderFunction = async ({ params }) => {
-  const category = params.category;
-  return { category };
+  const questions = await getLatestQuestionsForCategory(
+    params.category[0].toUpperCase() + params.category.slice(1)
+  );
+  return json(questions);
 };
 
 export default function Category() {
-  const data = useLoaderData();
+  const questions = useLoaderData<
+    (Question & {
+      author: {
+        username: string;
+      };
+      category: {
+        name: string;
+      };
+    })[]
+  >();
   const { classes } = useStyles();
 
   return (
@@ -32,11 +45,20 @@ export default function Category() {
           { minWidth: "lg", cols: 3 },
         ]}
       >
-        {Array.from({ length: 20 }, (_, index) => (
-          <CategoryCard category={data.category} key={index} />
-        ))}
+        {questions.map(
+          ({ id, title, description, createdAt, category, author }) => (
+            <QuestionCard
+              key={id}
+              title={title}
+              description={description}
+              createdAt={createdAt}
+              category={category}
+              author={author}
+            />
+          )
+        )}
       </SimpleGrid>
-      <Pagination total={10} position="center" />
+      {questions.length > 22 && <Pagination total={10} position="center" />}
     </>
   );
 }

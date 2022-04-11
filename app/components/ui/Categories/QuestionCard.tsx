@@ -64,12 +64,9 @@ export function QuestionCard({
           </Text>{" "}
           &sim;{" "}
           <Text size="xs" component="span" color="dimmed">
-            posted by {author.username}
+            posted by {author.username} &bull; {dayjs(createdAt).fromNow()}
           </Text>
         </Box>
-        {/* <ActionIcon color="red" ml="auto">
-          <Heart size={16} />
-        </ActionIcon> */}
         <Menu ml="auto">
           <Menu.Label>Post options</Menu.Label>
           <Menu.Item icon={<Copy size={14} />}>Copy link to post</Menu.Item>
@@ -93,14 +90,14 @@ export function QuestionCard({
         </Text>
       </section>
       <Box component="footer" mt="auto">
-        <Group align="baseline" position="apart">
+        <Group align="center" position="apart">
           <Text variant="link" size="sm">
             78 comments
           </Text>
-          <Group spacing="xs" align="baseline">
-            <Text component="time" size="xs" color="dimmed">
-              {dayjs(createdAt).fromNow()}
-            </Text>
+          <Group spacing="xs">
+            <ActionIcon color="red" ml="auto">
+              <Heart size={16} />
+            </ActionIcon>
           </Group>
         </Group>
       </Box>

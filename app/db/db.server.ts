@@ -28,7 +28,7 @@ export async function getLatestQuestionsForCategory(
       take: 22,
       skip: 22 * page,
       orderBy: {
-        createdAt: "asc",
+        createdAt: "desc",
       },
       include: {
         category: {
@@ -54,7 +54,7 @@ export async function getLatestQuestionsForCategory(
       },
     },
     orderBy: {
-      createdAt: "asc",
+      createdAt: "desc",
     },
     include: {
       category: {

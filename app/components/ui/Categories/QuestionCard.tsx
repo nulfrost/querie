@@ -12,6 +12,10 @@ import { Question } from "@prisma/client";
 import { Link } from "@remix-run/react";
 import { Flag2, Heart, Copy } from "tabler-icons-react";
 import { useActionModals } from "~/hooks/useActionModals";
+import dayjs from "dayjs";
+import relativeTime from "dayjs/plugin/relativeTime";
+
+dayjs.extend(relativeTime);
 
 const useStyles = createStyles((theme) => ({
   category: {
@@ -95,7 +99,7 @@ export function QuestionCard({
           </Text>
           <Group spacing="xs" align="baseline">
             <Text component="time" size="xs" color="dimmed">
-              4 hours ago
+              {dayjs(createdAt).fromNow()}
             </Text>
           </Group>
         </Group>

@@ -68,7 +68,25 @@ export default function New() {
           flexDirection: "column",
         }}
       >
-        <TextInput label="Title" name="title" required maxLength={30} mb="sm" />
+        <TextInput
+          label="Title"
+          name="title"
+          id="title"
+          required
+          maxLength={30}
+          mb="sm"
+          pattern="[A-Za-z]+"
+          onInput={(event: React.FormEvent<HTMLInputElement>) => {
+            if (event.currentTarget.validity.patternMismatch) {
+              event.currentTarget.setCustomValidity(
+                "Please enter a valid title"
+              );
+              event.currentTarget.reportValidity();
+            } else {
+              event.currentTarget.setCustomValidity("");
+            }
+          }}
+        />
         <Textarea
           label="Description"
           name="description"

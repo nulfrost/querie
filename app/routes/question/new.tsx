@@ -6,10 +6,30 @@ import {
   TextInput,
   Title,
 } from "@mantine/core";
+import { Question } from "@prisma/client";
 import { LoaderFunction, redirect, ActionFunction } from "@remix-run/node";
 import { Form, useLoaderData, useTransition } from "@remix-run/react";
+import { useEffect, useRef } from "react";
 import { createQuestion, getCategories } from "~/db/db.server";
 import { authenticator } from "~/services/auth.server";
+
+const validateQuestion = (
+  question: Pick<Question, "title" | "description"> & { category: string }
+) => {
+  if (!question.title || !question.description || !question.category) {
+    return true;
+  }
+
+  if (
+    question.title.length > 50 ||
+    question.title.length < 10 ||
+    question.description.length > 5000
+  ) {
+    return true;
+  }
+
+  return false;
+};
 
 export const action: ActionFunction = async ({ request }) => {
   const body = await request.formData();
@@ -48,6 +68,12 @@ export default function New() {
   const { categoryNames } = useLoaderData();
   const transition = useTransition();
 
+  const titleRef = useRef<HTMLInputElement | null>(null);
+
+  useEffect(() => {
+    titleRef?.current?.focus();
+  }, []);
+
   return (
     <Box
       mt="lg"
@@ -73,11 +99,15 @@ export default function New() {
           name="title"
           id="title"
           required
-          maxLength={30}
+          ref={titleRef}
+          maxLength={50}
           mb="sm"
-          pattern="[A-Za-z]+"
+          pattern="^[a-zA-Z0-9'!+.-=#$%^*()_-,\s]*$"
           onInput={(event: React.FormEvent<HTMLInputElement>) => {
-            if (event.currentTarget.validity.patternMismatch) {
+            if (
+              event.currentTarget.validity.patternMismatch ||
+              event.currentTarget.validity.valueMissing
+            ) {
               event.currentTarget.setCustomValidity(
                 "Please enter a valid title"
               );
@@ -87,6 +117,7 @@ export default function New() {
             }
           }}
         />
+
         <Textarea
           label="Description"
           name="description"

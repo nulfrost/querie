@@ -523,6 +523,7 @@ __export(new_exports, {
 var import_core4 = require("@mantine/core");
 var import_node3 = require("@remix-run/node");
 var import_react6 = require("@remix-run/react");
+var import_react7 = require("react");
 var action2 = async ({ request }) => {
   var _a;
   const body = await request.formData();
@@ -550,6 +551,11 @@ var loader4 = async ({ request }) => {
 function New() {
   const { categoryNames } = (0, import_react6.useLoaderData)();
   const transition = (0, import_react6.useTransition)();
+  const titleRef = (0, import_react7.useRef)(null);
+  (0, import_react7.useEffect)(() => {
+    var _a;
+    (_a = titleRef == null ? void 0 : titleRef.current) == null ? void 0 : _a.focus();
+  }, []);
   return /* @__PURE__ */ React.createElement(import_core4.Box, {
     mt: "lg",
     sx: (theme) => ({
@@ -573,11 +579,12 @@ function New() {
     name: "title",
     id: "title",
     required: true,
-    maxLength: 30,
+    ref: titleRef,
+    maxLength: 50,
     mb: "sm",
-    pattern: "[A-Za-z]+",
+    pattern: "^[a-zA-Z0-9'!+.-=#$%^*()_-,\\s]*$",
     onInput: (event) => {
-      if (event.currentTarget.validity.patternMismatch) {
+      if (event.currentTarget.validity.patternMismatch || event.currentTarget.validity.valueMissing) {
         event.currentTarget.setCustomValidity("Please enter a valid title");
         event.currentTarget.reportValidity();
       } else {
@@ -684,11 +691,11 @@ __export(category_exports, {
   loader: () => loader5
 });
 var import_core9 = require("@mantine/core");
-var import_react9 = require("@remix-run/react");
+var import_react10 = require("@remix-run/react");
 
 // app/components/ui/Categories/Categories.tsx
 var import_core7 = require("@mantine/core");
-var import_react7 = require("@remix-run/react");
+var import_react8 = require("@remix-run/react");
 var useStyles5 = (0, import_core7.createStyles)((theme) => ({
   links: {
     display: "flex",
@@ -715,7 +722,7 @@ function Categories({ categories }) {
   return /* @__PURE__ */ React.createElement(import_core7.List, {
     listStyleType: "none",
     className: classes.links
-  }, categories == null ? void 0 : categories.map(({ id, name }) => /* @__PURE__ */ React.createElement(import_core7.List.Item, null, /* @__PURE__ */ React.createElement(import_react7.NavLink, {
+  }, categories == null ? void 0 : categories.map(({ id, name }) => /* @__PURE__ */ React.createElement(import_core7.List.Item, null, /* @__PURE__ */ React.createElement(import_react8.NavLink, {
     to: `/category/${name.toLowerCase()}`,
     key: id,
     className: ({ isActive }) => cx(classes.link, { [classes.activeLink]: isActive })
@@ -724,9 +731,9 @@ function Categories({ categories }) {
 
 // app/components/ui/SocialButton.tsx
 var import_core8 = require("@mantine/core");
-var import_react8 = require("@remix-run/react");
+var import_react9 = require("@remix-run/react");
 function SocialButton({ provider, label, color }) {
-  return /* @__PURE__ */ React.createElement(import_react8.Form, {
+  return /* @__PURE__ */ React.createElement(import_react9.Form, {
     action: `/auth/${provider}`,
     method: "post"
   }, /* @__PURE__ */ React.createElement(import_core8.Button, {
@@ -742,8 +749,8 @@ var loader5 = async () => {
   return { categories };
 };
 function Category() {
-  const data = (0, import_react9.useLoaderData)();
-  const { category } = (0, import_react9.useParams)();
+  const data = (0, import_react10.useLoaderData)();
+  const { category } = (0, import_react10.useParams)();
   return /* @__PURE__ */ React.createElement(React.Fragment, null, /* @__PURE__ */ React.createElement(import_core9.Box, {
     component: "nav"
   }, /* @__PURE__ */ React.createElement(import_core9.Title, {
@@ -751,7 +758,7 @@ function Category() {
     mb: "lg"
   }, category ? category : "Latest questions"), /* @__PURE__ */ React.createElement(Categories, {
     categories: data.categories
-  })), /* @__PURE__ */ React.createElement(import_react9.Outlet, null));
+  })), /* @__PURE__ */ React.createElement(import_react10.Outlet, null));
 }
 
 // route:/Users/dane/Desktop/github/react/querie/app/routes/category/$category.tsx
@@ -762,11 +769,11 @@ __export(category_exports2, {
 });
 var import_core12 = require("@mantine/core");
 var import_node4 = require("@remix-run/node");
-var import_react11 = require("@remix-run/react");
+var import_react12 = require("@remix-run/react");
 
 // app/components/ui/Categories/QuestionCard.tsx
 var import_core11 = require("@mantine/core");
-var import_react10 = require("@remix-run/react");
+var import_react11 = require("@remix-run/react");
 var import_tabler_icons_react2 = require("tabler-icons-react");
 
 // app/hooks/useActionModals.tsx
@@ -843,7 +850,7 @@ function QuestionCard({
   }, /* @__PURE__ */ React.createElement(import_core11.Group, null, /* @__PURE__ */ React.createElement(import_core11.Box, null, /* @__PURE__ */ React.createElement(import_core11.Text, {
     to: `/category/${category.name.toLowerCase()}`,
     size: "xs",
-    component: import_react10.Link,
+    component: import_react11.Link,
     className: classes.category,
     variant: "link"
   }, category.name), " ", "\u223C", " ", /* @__PURE__ */ React.createElement(import_core11.Text, {
@@ -905,7 +912,7 @@ var loader6 = async ({ params }) => {
   return (0, import_node4.json)(questions);
 };
 function Category2() {
-  const questions = (0, import_react11.useLoaderData)();
+  const questions = (0, import_react12.useLoaderData)();
   const { classes } = useStyles7();
   return /* @__PURE__ */ React.createElement(React.Fragment, null, /* @__PURE__ */ React.createElement(import_core12.SimpleGrid, {
     className: classes.categories,
@@ -935,7 +942,7 @@ __export(category_exports3, {
 });
 var import_core13 = require("@mantine/core");
 var import_node5 = require("@remix-run/node");
-var import_react12 = require("@remix-run/react");
+var import_react13 = require("@remix-run/react");
 var useStyles8 = (0, import_core13.createStyles)((theme) => ({
   categories: {
     margin: `${theme.spacing.xl}px -8px`
@@ -950,7 +957,7 @@ var loader7 = async () => {
 };
 function Index() {
   const { classes } = useStyles8();
-  const questions = (0, import_react12.useLoaderData)();
+  const questions = (0, import_react13.useLoaderData)();
   return /* @__PURE__ */ React.createElement(React.Fragment, null, /* @__PURE__ */ React.createElement(import_core13.SimpleGrid, {
     className: classes.categories,
     cols: 1,
@@ -1035,7 +1042,7 @@ function Login() {
 }
 
 // server-assets-manifest:@remix-run/dev/assets-manifest
-var assets_manifest_default = { "version": "9b9be2c4", "entry": { "module": "/build/entry.client-46ZM4CJF.js", "imports": ["/build/_shared/chunk-XMAPAHPP.js", "/build/_shared/chunk-EE5I7FND.js", "/build/_shared/chunk-PWHP4PGH.js"] }, "routes": { "root": { "id": "root", "parentId": void 0, "path": "", "index": void 0, "caseSensitive": void 0, "module": "/build/root-55HG2YQV.js", "imports": ["/build/_shared/chunk-QPOTCLO6.js", "/build/_shared/chunk-DOKC7QFU.js"], "hasAction": false, "hasLoader": true, "hasCatchBoundary": false, "hasErrorBoundary": false }, "routes/auth/$provider": { "id": "routes/auth/$provider", "parentId": "root", "path": "auth/:provider", "index": void 0, "caseSensitive": void 0, "module": "/build/routes/auth/$provider-BIBOWH7N.js", "imports": void 0, "hasAction": true, "hasLoader": true, "hasCatchBoundary": false, "hasErrorBoundary": false }, "routes/auth/$provider.callback": { "id": "routes/auth/$provider.callback", "parentId": "root", "path": "auth/:provider/callback", "index": void 0, "caseSensitive": void 0, "module": "/build/routes/auth/$provider.callback-5S4SGR5P.js", "imports": void 0, "hasAction": false, "hasLoader": true, "hasCatchBoundary": false, "hasErrorBoundary": false }, "routes/category": { "id": "routes/category", "parentId": "root", "path": "category", "index": void 0, "caseSensitive": void 0, "module": "/build/routes/category-XIDR4YV2.js", "imports": ["/build/_shared/chunk-7FM6Z6JK.js"], "hasAction": false, "hasLoader": true, "hasCatchBoundary": false, "hasErrorBoundary": false }, "routes/category/$category": { "id": "routes/category/$category", "parentId": "routes/category", "path": ":category", "index": void 0, "caseSensitive": void 0, "module": "/build/routes/category/$category-Q4XRY3BC.js", "imports": ["/build/_shared/chunk-P7OUN2XF.js", "/build/_shared/chunk-QPOTCLO6.js", "/build/_shared/chunk-DOKC7QFU.js"], "hasAction": false, "hasLoader": true, "hasCatchBoundary": false, "hasErrorBoundary": false }, "routes/category/index": { "id": "routes/category/index", "parentId": "routes/category", "path": void 0, "index": true, "caseSensitive": void 0, "module": "/build/routes/category/index-BBVCNSRS.js", "imports": ["/build/_shared/chunk-P7OUN2XF.js", "/build/_shared/chunk-QPOTCLO6.js", "/build/_shared/chunk-DOKC7QFU.js"], "hasAction": false, "hasLoader": true, "hasCatchBoundary": false, "hasErrorBoundary": false }, "routes/index": { "id": "routes/index", "parentId": "root", "path": void 0, "index": true, "caseSensitive": void 0, "module": "/build/routes/index-DEM7L523.js", "imports": void 0, "hasAction": false, "hasLoader": true, "hasCatchBoundary": false, "hasErrorBoundary": false }, "routes/leaderboard": { "id": "routes/leaderboard", "parentId": "root", "path": "leaderboard", "index": void 0, "caseSensitive": void 0, "module": "/build/routes/leaderboard-DF2BHQBG.js", "imports": void 0, "hasAction": false, "hasLoader": false, "hasCatchBoundary": false, "hasErrorBoundary": false }, "routes/login": { "id": "routes/login", "parentId": "root", "path": "login", "index": void 0, "caseSensitive": void 0, "module": "/build/routes/login-6V3WR7QF.js", "imports": ["/build/_shared/chunk-DZ6QUBUY.js"], "hasAction": false, "hasLoader": true, "hasCatchBoundary": false, "hasErrorBoundary": false }, "routes/logout": { "id": "routes/logout", "parentId": "root", "path": "logout", "index": void 0, "caseSensitive": void 0, "module": "/build/routes/logout-C5SNCLE7.js", "imports": void 0, "hasAction": true, "hasLoader": false, "hasCatchBoundary": false, "hasErrorBoundary": false }, "routes/question/new": { "id": "routes/question/new", "parentId": "root", "path": "question/new", "index": void 0, "caseSensitive": void 0, "module": "/build/routes/question/new-C6UEN3KK.js", "imports": ["/build/_shared/chunk-DZ6QUBUY.js", "/build/_shared/chunk-7FM6Z6JK.js"], "hasAction": true, "hasLoader": true, "hasCatchBoundary": false, "hasErrorBoundary": false } }, "url": "/build/manifest-9B9BE2C4.js" };
+var assets_manifest_default = { "version": "b0a5b310", "entry": { "module": "/build/entry.client-46ZM4CJF.js", "imports": ["/build/_shared/chunk-XMAPAHPP.js", "/build/_shared/chunk-EE5I7FND.js", "/build/_shared/chunk-PWHP4PGH.js"] }, "routes": { "root": { "id": "root", "parentId": void 0, "path": "", "index": void 0, "caseSensitive": void 0, "module": "/build/root-55HG2YQV.js", "imports": ["/build/_shared/chunk-QPOTCLO6.js", "/build/_shared/chunk-DOKC7QFU.js"], "hasAction": false, "hasLoader": true, "hasCatchBoundary": false, "hasErrorBoundary": false }, "routes/auth/$provider": { "id": "routes/auth/$provider", "parentId": "root", "path": "auth/:provider", "index": void 0, "caseSensitive": void 0, "module": "/build/routes/auth/$provider-BIBOWH7N.js", "imports": void 0, "hasAction": true, "hasLoader": true, "hasCatchBoundary": false, "hasErrorBoundary": false }, "routes/auth/$provider.callback": { "id": "routes/auth/$provider.callback", "parentId": "root", "path": "auth/:provider/callback", "index": void 0, "caseSensitive": void 0, "module": "/build/routes/auth/$provider.callback-5S4SGR5P.js", "imports": void 0, "hasAction": false, "hasLoader": true, "hasCatchBoundary": false, "hasErrorBoundary": false }, "routes/category": { "id": "routes/category", "parentId": "root", "path": "category", "index": void 0, "caseSensitive": void 0, "module": "/build/routes/category-XIDR4YV2.js", "imports": ["/build/_shared/chunk-7FM6Z6JK.js"], "hasAction": false, "hasLoader": true, "hasCatchBoundary": false, "hasErrorBoundary": false }, "routes/category/$category": { "id": "routes/category/$category", "parentId": "routes/category", "path": ":category", "index": void 0, "caseSensitive": void 0, "module": "/build/routes/category/$category-Q4XRY3BC.js", "imports": ["/build/_shared/chunk-P7OUN2XF.js", "/build/_shared/chunk-QPOTCLO6.js", "/build/_shared/chunk-DOKC7QFU.js"], "hasAction": false, "hasLoader": true, "hasCatchBoundary": false, "hasErrorBoundary": false }, "routes/category/index": { "id": "routes/category/index", "parentId": "routes/category", "path": void 0, "index": true, "caseSensitive": void 0, "module": "/build/routes/category/index-BBVCNSRS.js", "imports": ["/build/_shared/chunk-P7OUN2XF.js", "/build/_shared/chunk-QPOTCLO6.js", "/build/_shared/chunk-DOKC7QFU.js"], "hasAction": false, "hasLoader": true, "hasCatchBoundary": false, "hasErrorBoundary": false }, "routes/index": { "id": "routes/index", "parentId": "root", "path": void 0, "index": true, "caseSensitive": void 0, "module": "/build/routes/index-DEM7L523.js", "imports": void 0, "hasAction": false, "hasLoader": true, "hasCatchBoundary": false, "hasErrorBoundary": false }, "routes/leaderboard": { "id": "routes/leaderboard", "parentId": "root", "path": "leaderboard", "index": void 0, "caseSensitive": void 0, "module": "/build/routes/leaderboard-DF2BHQBG.js", "imports": void 0, "hasAction": false, "hasLoader": false, "hasCatchBoundary": false, "hasErrorBoundary": false }, "routes/login": { "id": "routes/login", "parentId": "root", "path": "login", "index": void 0, "caseSensitive": void 0, "module": "/build/routes/login-6V3WR7QF.js", "imports": ["/build/_shared/chunk-DZ6QUBUY.js"], "hasAction": false, "hasLoader": true, "hasCatchBoundary": false, "hasErrorBoundary": false }, "routes/logout": { "id": "routes/logout", "parentId": "root", "path": "logout", "index": void 0, "caseSensitive": void 0, "module": "/build/routes/logout-C5SNCLE7.js", "imports": void 0, "hasAction": true, "hasLoader": false, "hasCatchBoundary": false, "hasErrorBoundary": false }, "routes/question/new": { "id": "routes/question/new", "parentId": "root", "path": "question/new", "index": void 0, "caseSensitive": void 0, "module": "/build/routes/question/new-NZGDD7FG.js", "imports": ["/build/_shared/chunk-DZ6QUBUY.js", "/build/_shared/chunk-7FM6Z6JK.js"], "hasAction": true, "hasLoader": true, "hasCatchBoundary": false, "hasErrorBoundary": false } }, "url": "/build/manifest-B0A5B310.js" };
 
 // server-entry-module:@remix-run/dev/server-build
 var entry = { module: entry_server_exports };

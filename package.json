@@ -6,6 +6,8 @@
   "sideEffects": false,
   "scripts": {
     "build": "remix build",
+    "deploy:db": "prisma migrate deploy",
+    "start": "remix-serve build",
     "dev": "remix dev"
   },
   "dependencies": {

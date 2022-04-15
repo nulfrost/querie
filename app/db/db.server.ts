@@ -1,4 +1,9 @@
 import { PrismaClient } from "@prisma/client";
+import {
+  DiscordProfile,
+  GitHubProfile,
+  GoogleProfile,
+} from "remix-auth-socials";
 
 interface CustomNodeJsGlobal extends NodeJS.Global {
   prisma: PrismaClient;
@@ -14,11 +19,53 @@ export async function getCategories() {
   return prisma.category.findMany();
 }
 
-export async function getLatestQuestionsForCategory(category?: string) {
+export async function getLatestQuestionsForCategory(
+  category?: string,
+  page = 0
+) {
+  if (!category) {
+    return prisma.question.findMany({
+      take: 22,
+      skip: 22 * page,
+      orderBy: {
+        createdAt: "desc",
+      },
+      include: {
+        category: {
+          select: {
+            name: true,
+          },
+        },
+        author: {
+          select: {
+            username: true,
+          },
+        },
+      },
+    });
+  }
+
   return prisma.question.findMany({
+    take: 22,
+    skip: 22 * page,
     where: {
       category: {
-        name: category ?? "",
+        name: category,
+      },
+    },
+    orderBy: {
+      createdAt: "desc",
+    },
+    include: {
+      category: {
+        select: {
+          name: true,
+        },
+      },
+      author: {
+        select: {
+          username: true,
+        },
       },
     },
   });
@@ -118,6 +165,28 @@ export async function createQuestionLike({
           userId,
         },
       },
+    },
+  });
+}
+
+export async function findOrCreateUser(
+  profile: GoogleProfile | DiscordProfile | GitHubProfile
+) {
+  return prisma.user.upsert({
+    where: {
+      email: profile?.emails[0]?.value,
+    },
+    update: {
+      username: profile?.displayName,
+      connection: profile?.provider,
+      image_url: profile?.photos[0].value,
+      email: profile?.emails[0]?.value,
+    },
+    create: {
+      email: profile?.emails[0].value,
+      username: profile?.displayName,
+      connection: profile?.provider,
+      image_url: profile?.photos[0].value,
     },
   });
 }

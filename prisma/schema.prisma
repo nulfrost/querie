@@ -1,18 +1,18 @@
 generator client {
-  provider        = "prisma-client-js"
-  previewFeatures = ["referentialIntegrity"]
+  provider = "prisma-client-js"
 }
 
 datasource db {
-  provider             = "mysql"
-  url                  = env("DATABASE_URL")
-  referentialIntegrity = "prisma"
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
 }
 
 model User {
   id             String            @id @default(uuid())
   email          String            @unique
   username       String
+  image_url      String
+  connection     String
   question       Question[]
   comment        Comment[]
   createdAt      DateTime          @default(now())
@@ -26,14 +26,14 @@ model Question {
   id          String            @id @default(uuid())
   title       String
   description String
-  author      User              @relation(fields: [userId], references: [id])
-  userId      String
-  category    Category          @relation(fields: [categoryId], references: [id])
+  author      User?             @relation(fields: [userId], references: [id])
+  userId      String?
+  category    Category?         @relation(fields: [categoryId], references: [id])
   comments    Comment[]
   createdAt   DateTime          @default(now())
-  updatedAt   DateTime          @default(now())
+  updatedAt   DateTime          @default(now()) @updatedAt
   likes       LikesOnQuestion[]
-  categoryId  Int
+  categoryId  Int?
 
   @@map("questions")
 }
@@ -41,12 +41,12 @@ model Question {
 model Comment {
   id         String           @id @default(uuid())
   content    String
-  author     User             @relation(fields: [userId], references: [id])
-  userId     String
-  question   Question         @relation(fields: [questionId], references: [id])
-  questionId String
+  author     User?            @relation(fields: [userId], references: [id])
+  userId     String?
+  question   Question?        @relation(fields: [questionId], references: [id])
+  questionId String?
   createdAt  DateTime         @default(now())
-  updatedAt  DateTime         @default(now())
+  updatedAt  DateTime         @default(now()) @updatedAt
   likes      LikesOnComment[]
 
   @@map("comments")
@@ -78,26 +78,3 @@ model Category {
 
   @@map("categories")
 }
-
-// enum Tag {
-//   ARTS
-//   BEAUTY
-//   BUSINESS
-//   CARS
-//   COMPUTERS
-//   ELECTRONICS
-//   FOOD
-//   EDUCATION
-//   ENTERTAINMENT
-//   ENVIRONMENT
-//   RELATIONSHIPS
-//   GAMES
-//   HEALTH
-//   GARDENING
-//   PETS
-//   PARENTING
-//   SCIENCE
-//   CULTURE
-//   SPORTS
-//   TRAVEL
-// }

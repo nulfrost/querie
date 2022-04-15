@@ -14,7 +14,7 @@ export let authenticator = new Authenticator(sessionStorage, {
 
 const ENVIRONMENT_URL =
   process.env.NODE_ENV === "production"
-    ? process.env.RAILWAY_STATIC_URL
+    ? `https://${process.env.RAILWAY_STATIC_URL}`
     : process.env.REMIX_APP_URL;
 
 authenticator.use(

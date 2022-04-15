@@ -397,7 +397,7 @@ async function findOrCreateUser(profile) {
 var authenticator = new import_remix_auth.Authenticator(sessionStorage, {
   sessionKey: "__session"
 });
-var ENVIRONMENT_URL = false ? process.env.RAILWAY_STATIC_URL : process.env.REMIX_APP_URL;
+var ENVIRONMENT_URL = false ? `https://${process.env.RAILWAY_STATIC_URL}` : process.env.REMIX_APP_URL;
 authenticator.use(new import_remix_auth_socials.GoogleStrategy({
   clientID: process.env.GOOGLE_CLIENT_ID,
   clientSecret: process.env.GOOGLE_CLIENT_SECRET,

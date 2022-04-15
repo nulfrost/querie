@@ -6,6 +6,5 @@ This is another project I'm working on, rebuilding a variation of yahoo!answers 
 
 - [Mantine](https://mantine.dev)
 - [Remix](https://remix.run)
-- [Cloudflare Pages](https://pages.cloudflare.com)
+- [Railway](https://railway.app/)
 - [Prisma](https://prisma.io)
-- [Planetscale](https://planetscale.com/)

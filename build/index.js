@@ -397,10 +397,11 @@ async function findOrCreateUser(profile) {
 var authenticator = new import_remix_auth.Authenticator(sessionStorage, {
   sessionKey: "__session"
 });
+var ENVIRONMENT_URL = false ? process.env.RAILWAY_STATIC_URL : process.env.REMIX_APP_URL;
 authenticator.use(new import_remix_auth_socials.GoogleStrategy({
   clientID: process.env.GOOGLE_CLIENT_ID,
   clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-  callbackURL: `http://localhost:3000/auth/${import_remix_auth_socials.SocialsProvider.GOOGLE}/callback`
+  callbackURL: `${ENVIRONMENT_URL}/auth/${import_remix_auth_socials.SocialsProvider.GOOGLE}/callback`
 }, async ({ profile }) => {
   try {
     const user = await findOrCreateUser(profile);
@@ -412,7 +413,7 @@ authenticator.use(new import_remix_auth_socials.GoogleStrategy({
 authenticator.use(new import_remix_auth_socials.DiscordStrategy({
   clientID: process.env.DISCORD_CLIENT_ID,
   clientSecret: process.env.DISCORD_CLIENT_SECRET,
-  callbackURL: `http://localhost:3000/auth/${import_remix_auth_socials.SocialsProvider.DISCORD}/callback`
+  callbackURL: `${ENVIRONMENT_URL}/auth/${import_remix_auth_socials.SocialsProvider.DISCORD}/callback`
 }, async ({ profile }) => {
   try {
     const user = await findOrCreateUser(profile);
@@ -424,7 +425,7 @@ authenticator.use(new import_remix_auth_socials.DiscordStrategy({
 authenticator.use(new import_remix_auth_socials.GitHubStrategy({
   clientID: process.env.GITHUB_CLIENT_ID,
   clientSecret: process.env.GITHUB_CLIENT_SECRET,
-  callbackURL: `http://localhost:3000/auth/${import_remix_auth_socials.SocialsProvider.GITHUB}/callback`
+  callbackURL: `${ENVIRONMENT_URL}/auth/${import_remix_auth_socials.SocialsProvider.GITHUB}/callback`
 }, async ({ profile }) => {
   try {
     const user = await findOrCreateUser(profile);

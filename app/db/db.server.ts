@@ -38,6 +38,7 @@ export async function getLatestQuestionsForCategory(
         },
         author: {
           select: {
+            id: true,
             username: true,
           },
         },

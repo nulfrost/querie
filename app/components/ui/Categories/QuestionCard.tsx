@@ -9,7 +9,7 @@ import {
   Menu,
 } from "@mantine/core";
 import { Question } from "@prisma/client";
-import { Link } from "@remix-run/react";
+import { Link, useSubmit, useNavigate } from "@remix-run/react";
 import { Flag2, Heart, Copy } from "tabler-icons-react";
 import { useActionModals } from "~/hooks/useActionModals";
 import dayjs from "dayjs";
@@ -30,22 +30,28 @@ const useStyles = createStyles((theme) => ({
 }));
 
 type QuestionCardProps = Question & {
+  isAuthenticated: boolean;
   category: {
     name: string;
   };
   author: {
+    id: string;
     username: string;
   };
 };
 
 export function QuestionCard({
+  id,
   createdAt,
   description,
   title,
   author,
   category,
+  isAuthenticated,
 }: Partial<QuestionCardProps>) {
   const { reportModal } = useActionModals();
+  const submit = useSubmit();
+  const navigate = useNavigate();
 
   const { classes } = useStyles();
 
@@ -95,7 +101,18 @@ export function QuestionCard({
             78 comments
           </Text>
           <Group spacing="xs">
-            <ActionIcon color="red" ml="auto">
+            <ActionIcon
+              color="red"
+              ml="auto"
+              onClick={() =>
+                isAuthenticated
+                  ? submit(
+                      { userId: author.id, questionId: id },
+                      { replace: true, method: "post", action: "/like" }
+                    )
+                  : navigate("/login")
+              }
+            >
               <Heart size={16} />
             </ActionIcon>
           </Group>

@@ -4,6 +4,7 @@ import { json, LoaderFunction } from "@remix-run/node";
 import { useLoaderData } from "@remix-run/react";
 import { QuestionCard } from "~/components/ui/Categories";
 import { getLatestQuestionsForCategory } from "~/db/db.server";
+import { authenticator } from "~/services/auth.server";
 
 const useStyles = createStyles((theme) => ({
   categories: {
@@ -15,24 +16,35 @@ const useStyles = createStyles((theme) => ({
   },
 }));
 
-export const loader: LoaderFunction = async () => {
-  const questions = await getLatestQuestionsForCategory();
+export const loader: LoaderFunction = async ({ request }) => {
+  try {
+    const [user, questions] = await Promise.all([
+      await authenticator.isAuthenticated(request),
+      await getLatestQuestionsForCategory(),
+    ]);
 
-  return json(questions);
+    return json({ user, questions });
+  } catch (e) {
+    console.error(e);
+  }
 };
 
 export default function Index() {
   const { classes } = useStyles();
-  const questions = useLoaderData<
-    (Question & {
+  const { user, questions } = useLoaderData<{
+    user: any;
+    questions: (Question & {
       author: {
+        id: string;
         username: string;
       };
       category: {
         name: string;
       };
-    })[]
-  >();
+    })[];
+  }>();
+
+  const isAuthenticated = user ? true : false;
 
   return (
     <>
@@ -48,11 +60,13 @@ export default function Index() {
           ({ id, title, description, createdAt, category, author }) => (
             <QuestionCard
               key={id}
+              id={id}
               title={title}
               description={description}
               createdAt={createdAt}
               category={category}
               author={author}
+              isAuthenticated={isAuthenticated}
             />
           )
         )}
